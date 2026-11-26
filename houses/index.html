@@ -108,7 +108,7 @@ const app=document.getElementById('app');
 function home(){
   mode=null;house=null;
   app.innerHTML=`<div class="screen"><h1>البيوت الأربعة</h1>
-  <div class="sub">بنك ${AR(210)} سؤالًا موثّقًا — لعبة مستقلة: أربعة بيوت، كل بيت له عالمه وأسئلته. اختر سن اللاعب وبيته، والعب جولة، وكل إجابة بيظهر بعدها التصحيح والمصدر.</div>
+  <div class="sub">بنك ${AR(227)} سؤالًا موثّقًا — لعبة مستقلة: أربعة بيوت، كل بيت له عالمه وأسئلته. اختر سن اللاعب وبيته، والعب جولة، وكل إجابة بيظهر بعدها التصحيح والمصدر.</div>
   <div class="grid modes">${MODES.map((m,i)=>`<div class="card" onclick="pickMode(${i})"><div class="ic">${m.icon}</div>${m.label}<small>${m.sub}</small></div>`).join('')}</div>
   <div class="disc">الأسئلة موثقة بمصادرها الرسمية ومعظمها من دار الإفتاء المصرية، واللعبة تعليمية وليست فتوى. مستويات الأسئلة تصنيف تحريري. الجولة بتتحفظ على الجهاز ده بس.</div></div>`;
 }
