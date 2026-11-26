@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f7d5b">
+<title>البيوت الأربعة — ماتيجي نعرف</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+:root{--ink:#26201a;--cream:#f6efe3;--navy:#12263f;--gold:#d4a017}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+body{background:var(--cream);color:var(--ink);min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.6rem;margin-bottom:4px}
+.sub{color:#6b5f52;font-size:.95rem;margin-bottom:18px}
+.note{background:#efe4cd;border-radius:10px;padding:10px 12px;font-size:.85rem;margin-bottom:16px;color:#5c5142}
+.grid{display:grid;gap:10px}
+.modes{grid-template-columns:repeat(3,1fr)}
+.houses{grid-template-columns:1fr 1fr}
+.card{background:#fff;border:2px solid #e4d7bf;border-radius:14px;padding:14px 10px;text-align:center;cursor:pointer;font-size:1rem;transition:transform .15s,box-shadow .15s,border-color .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(38,32,26,.12)}
+.card:active{transform:scale(.97)}
+.card small{display:block;color:#6b5f52;font-size:.75rem;margin-top:4px}
+.card .ic{font-size:1.5rem;display:flex;align-items:center;justify-content:center;min-height:34px}
+.card.sel{border-color:var(--gold);background:#fdf7e7}
+.qbox{background:var(--navy);color:#fff;border-radius:16px;padding:20px 16px;margin-top:14px}
+.qmeta{display:flex;justify-content:space-between;font-size:.8rem;color:#bcd0e8;margin-bottom:10px}
+.qq{font-size:1.1rem;line-height:1.7;margin-bottom:16px}
+.prog{height:6px;background:#0d1b2d;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;background:var(--gold);border-radius:99px;transition:width .45s ease}
+.opt{display:block;width:100%;background:#1d3b5e;color:#fff;border:2px solid #33547c;border-radius:12px;padding:12px;margin-bottom:10px;font-size:1rem;text-align:right;cursor:pointer;line-height:1.5;transition:transform .12s,background .2s,border-color .2s}
+.opt:not(:disabled):hover{transform:translateX(-4px);border-color:#5b82b3}
+.opt:not(:disabled):active{transform:scale(.98)}
+.opt.right{background:#1e5c40;border-color:#3fae7c;animation:rightPulse .6s ease-out}
+.opt.wrong{background:#6e2a2a;border-color:#b05050;animation:shake .35s}
+.ex{background:#0d1b2d;border-radius:10px;padding:12px;font-size:.9rem;line-height:1.7;margin-top:6px;animation:pop .3s ease both}
+.ex a{color:var(--gold);word-break:break-all}
+.btn{background:var(--gold);color:var(--navy);border:0;border-radius:12px;padding:12px 22px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;transition:transform .12s,box-shadow .15s}
+.btn:hover{box-shadow:0 4px 12px rgba(212,160,23,.35)}
+.btn:active{transform:scale(.96)}
+.btn.outline{background:transparent;border:2px solid var(--gold);color:var(--navy)}
+.result{background:#fff;border-radius:16px;padding:20px;text-align:center;margin-top:14px;animation:resultPop .45s ease both}
+.result h1{font-size:2.2rem}
+.miss{background:#fff;border-radius:12px;padding:12px;margin-top:10px;font-size:.9rem;line-height:1.7;text-align:right;animation:pop .4s ease both}
+.miss a{color:var(--navy)}
+.disc{font-size:.75rem;color:#8a7d6b;margin-top:24px;line-height:1.7}
+.hidden{display:none}
+.screen{animation:pop .35s ease both}
+.sndbtn{position:fixed;top:12px;left:12px;z-index:50;background:#fff;border:2px solid #e4d7bf;border-radius:50%;width:44px;height:44px;font-size:1.15rem;cursor:pointer;box-shadow:0 2px 8px rgba(38,32,26,.12);transition:transform .12s}
+.sndbtn:active{transform:scale(.9)}
+.bump{animation:scoreBump .5s;display:inline-block}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes rightPulse{0%{box-shadow:0 0 0 0 rgba(63,174,124,.7)}100%{box-shadow:0 0 0 14px rgba(63,174,124,0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes scoreBump{0%{transform:scale(1)}40%{transform:scale(1.4);color:var(--gold)}100%{transform:scale(1)}}
+@keyframes resultPop{0%{opacity:0;transform:scale(.8)}60%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<button id="snd" class="sndbtn" aria-label="الصوت">🔊</button>
+<div class="wrap" id="app"></div>
+<script src="data.js"></script>
+<script>
+const NABAWI=`<svg viewBox="0 0 64 64" width="34" height="34" role="img" aria-label="المسجد النبوي"><rect x="8" y="38" width="48" height="18" rx="2" fill="#e8dfc9"/><path d="M32 12c8 4 12 9 12 16v10H20V28c0-7 4-12 12-16z" fill="#2f7d5b"/><ellipse cx="32" cy="11" rx="1.7" ry="2.6" fill="#d4a017"/><rect x="50" y="14" width="6" height="24" fill="#f3ede0"/><rect x="49" y="11" width="8" height="4" rx="1" fill="#2f7d5b"/><circle cx="53" cy="8" r="2.4" fill="#d4a017"/><path d="M28 56v-8a4 4 0 0 1 8 0v8z" fill="#8a7d6b"/><rect x="13" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/><rect x="44" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/></svg>`;
+const houseIcon=k=>k==='sira'?NABAWI:HOUSES[k].icon;
+const Snd=(()=>{
+  let ctx=null,on=true;
+  try{on=localStorage.getItem('bh_sound')!=='off'}catch(e){}
+  function ac(){try{if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}catch(e){return null}}
+  function tone(f,d,type,vol,delay,fEnd){
+    if(!on)return;const c=ac();if(!c)return;
+    type=type||'sine';vol=vol||0.16;delay=delay||0;
+    const t0=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.setValueAtTime(f,t0);
+    if(fEnd)o.frequency.exponentialRampToValueAtTime(fEnd,t0+d);
+    g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+    o.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+d+0.05);
+  }
+  return {
+    get on(){return on},
+    toggle(){on=!on;try{localStorage.setItem('bh_sound',on?'on':'off')}catch(e){}return on},
+    tap(){tone(520,0.06,'triangle',0.10)},
+    correct(){tone(523,0.12,'sine',0.20);tone(784,0.20,'sine',0.20,0.10)},
+    wrong(){tone(240,0.28,'sawtooth',0.08,0,160)},
+    next(){tone(420,0.09,'triangle',0.13,0,760)},
+    finish(){tone(523,0.12);tone(659,0.12,'sine',0.18,0.12);tone(784,0.28,'sine',0.18,0.24)}
+  };
+})();
+const sndBtn=document.getElementById('snd');
+function paintSnd(){sndBtn.textContent=Snd.on?'🔊':'🔇';sndBtn.title=Snd.on?'كتم الصوت':'تشغيل الصوت'}
+sndBtn.addEventListener('click',()=>{Snd.toggle();paintSnd();Snd.tap()});
+paintSnd();
+const MODES=[
+ {id:'kids',label:'صغار',sub:'٧–١٢ سنة',icon:'🧒',levels:[1],round:5,note:'أسئلة مكتوبة للأطفال بتقدّم الأولوية، وبعدها الأسهل من كل البنك. جولة من ٥ أسئلة بلغة تشجيعية.'},
+ {id:'youth',label:'شباب',sub:'١٣–١٧ سنة',icon:'🧑',levels:[1,2],round:8,note:'أسئلة سهلة ومتوسطة، جولة من ٨ أسئلة.'},
+ {id:'adults',label:'كبار',sub:'كل المستويات',icon:'🎓',levels:[1,2,3],round:8,note:'أسئلة متقدمة مكتوبة للكبار بتقدّم الأولوية، وبعدها باقي مستويات البنك. جولة من ٨ أسئلة.'}
+];
+const AR=n=>String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let mode=null,house=null,round=[],idx=0,picked=-1,answers=[];
+const app=document.getElementById('app');
+
+function home(){
+  mode=null;house=null;
+  app.innerHTML=`<div class="screen"><h1>البيوت الأربعة</h1>
+  <div class="sub">بنك ${AR(210)} سؤالًا موثّقًا — لعبة مستقلة: أربعة بيوت، كل بيت له عالمه وأسئلته. اختر سن اللاعب وبيته، والعب جولة، وكل إجابة بيظهر بعدها التصحيح والمصدر.</div>
+  <div class="grid modes">${MODES.map((m,i)=>`<div class="card" onclick="pickMode(${i})"><div class="ic">${m.icon}</div>${m.label}<small>${m.sub}</small></div>`).join('')}</div>
+  <div class="disc">الأسئلة موثقة بمصادرها الرسمية ومعظمها من دار الإفتاء المصرية، واللعبة تعليمية وليست فتوى. مستويات الأسئلة تصنيف تحريري. الجولة بتتحفظ على الجهاز ده بس.</div></div>`;
+}
+function pickMode(i){
+  Snd.tap();
+  mode=MODES[i];
+  const keys=Object.keys(HOUSES);
+  app.innerHTML=`<div class="screen"><h1>${mode.icon} ${mode.label}</h1><div class="sub">اختار البيت</div>
+  <div class="note">${mode.note}</div>
+  <div class="grid houses">${keys.map(k=>{const h=HOUSES[k];const n=h.questions.filter(q=>mode.levels.includes(q.lvl)).length;
+    return `<div class="card" onclick="pickHouse('${k}')" style="border-top:4px solid ${h.color}"><div class="ic">${houseIcon(k)}</div>${h.name}<small>${h.desc}</small><small>${AR(n)} من ${AR(h.questions.length)} سؤالًا في مسارك</small></div>`}).join('')}</div>
+  <button class="btn outline" onclick="home()">رجوع</button></div>`;
+}
+function pickHouse(k){
+  Snd.tap();
+  house=k;
+  const pool=HOUSES[k].questions.filter(q=>mode.levels.includes(q.lvl));
+  const flag=mode.id;
+  const ordered=[...shuffle(pool.filter(q=>q[flag])),...shuffle(pool.filter(q=>!q[flag]))];
+  round=ordered.slice(0,mode.round).map(q=>({...q,order:shuffle(q.o.map((_,i)=>i))}));
+  idx=0;picked=-1;answers=[];
+  renderQ();
+}
+function renderQ(){
+  const q=round[idx];const correctPos=q.order.indexOf(q.a);
+  app.innerHTML=`<div class="screen"><div class="qbox">
+   <div class="qmeta"><span>السؤال ${AR(idx+1)} من ${AR(round.length)}</span><span>نقاطك: <span id="score">${AR(answers.filter(Boolean).length)}</span></span></div>
+   <div class="prog"><i style="width:${Math.round(idx/round.length*100)}%"></i></div>
+   <div class="qq">${q.q}</div>
+   ${q.order.map((oi,pos)=>`<button class="opt" id="o${pos}" onclick="pick(${pos})">${q.o[oi]}</button>`).join('')}
+   <div id="ex" class="hidden"></div>
+   <div id="next" class="hidden"></div>
+  </div>
+  <button class="btn outline" onclick="pickMode(MODES.indexOf(mode))">إنهاء الجولة</button></div>`;
+  renderQ.correctPos=correctPos;
+}
+function pick(pos){
+  if(picked!==-1)return;picked=pos;
+  const q=round[idx];const ok=q.order[pos]===q.a;answers.push(ok);
+  if(ok)Snd.correct();else Snd.wrong();
+  q.order.forEach((oi,p)=>{const b=document.getElementById('o'+p);b.disabled=true;
+    if(oi===q.a)b.classList.add('right');else if(p===pos)b.classList.add('wrong');});
+  const prog=document.querySelector('.prog i');if(prog)prog.style.width=Math.round((idx+1)/round.length*100)+'%';
+  const sc=document.getElementById('score');if(sc){sc.textContent=AR(answers.filter(Boolean).length);if(ok)sc.classList.add('bump')}
+  const kids=mode.id==='kids';
+  const ex=document.getElementById('ex');ex.className='ex';
+  ex.innerHTML=`<b>${ok?(kids?'برافو عليك! إجابة صح 🌟':'✔ إجابة صحيحة'):(kids?'مش مشكلة يا بطل! الصح: ':'✘ الصحيح: ')+(ok?'':q.o[q.a])}</b><br>${q.ex}<br><a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a>`;
+  const nx=document.getElementById('next');nx.className='';
+  nx.innerHTML=`<button class="btn" onclick="${idx+1>=round.length?'result()':'goNext()'}">${idx+1>=round.length?'شوف نتيجتك':'السؤال التالي'}</button>`;
+}
+function goNext(){Snd.next();idx++;picked=-1;renderQ()}
+function result(){
+  Snd.finish();
+  const score=answers.filter(Boolean).length;const kids=mode.id==='kids';
+  const msg=score===round.length?(kids?'بطل! جاوبت صح على كل الأسئلة 🌟':'جولة كاملة! جرّب بيتًا تانيًا.')
+    :score>=round.length/2?'نتيجة حلوة. راجع اللي فاتك تحت.':(kids?'كل غلطة بتعلمنا حاجة جديدة. جرّب تاني!':'البيوت التانية مستنياك، وكل غلطة اتصححت بمرجعها.');
+  const misses=round.filter((q,i)=>!answers[i]);
+  app.innerHTML=`<div class="screen"><div class="result"><h1>${AR(score)} من ${AR(round.length)}</h1><p>${msg}</p>
+   <button class="btn" onclick="pickHouse(house)">العب تاني</button>
+   <button class="btn outline" onclick="pickMode(MODES.indexOf(mode))">البيوت</button>
+   <button class="btn outline" onclick="home()">البداية</button></div>
+   ${misses.map(q=>`<div class="miss"><b>${q.q}</b><br>الصحيح: ${q.o[q.a]}<br>${q.ex} — <a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a></div>`).join('')}</div>`;
+  try{const best=JSON.parse(localStorage.getItem('bh_best')||'{}');const key=mode.id+'_'+house;
+    if(!best[key]||score>best[key]){best[key]=score;localStorage.setItem('bh_best',JSON.stringify(best));}}catch(e){}
+}
+home();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
