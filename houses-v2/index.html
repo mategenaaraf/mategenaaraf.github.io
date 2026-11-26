@@ -25,7 +25,7 @@ h1{font-size:1.6rem;margin-bottom:4px}
 .card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(38,32,26,.12)}
 .card:active{transform:scale(.97)}
 .card small{display:block;color:#6b5f52;font-size:.75rem;margin-top:4px}
-.card .ic{font-size:1.5rem;display:flex;align-items:center;justify-content:center;min-height:34px}
+.card .ic{font-size:1.5rem;display:flex;align-items:center;justify-content:center;min-height:44px}
 .card.sel{border-color:var(--gold);background:#fdf7e7}
 .qbox{background:var(--navy);color:#fff;border-radius:16px;padding:20px 16px;margin-top:14px}
 .qmeta{display:flex;justify-content:space-between;font-size:.8rem;color:#bcd0e8;margin-bottom:10px}
@@ -66,7 +66,7 @@ h1{font-size:1.6rem;margin-bottom:4px}
 <div class="wrap" id="app"></div>
 <script src="data.js"></script>
 <script>
-const NABAWI=`<svg viewBox="0 0 64 64" width="34" height="34" role="img" aria-label="المسجد النبوي"><rect x="8" y="38" width="48" height="18" rx="2" fill="#e8dfc9"/><path d="M32 12c8 4 12 9 12 16v10H20V28c0-7 4-12 12-16z" fill="#2f7d5b"/><ellipse cx="32" cy="11" rx="1.7" ry="2.6" fill="#d4a017"/><rect x="50" y="14" width="6" height="24" fill="#f3ede0"/><rect x="49" y="11" width="8" height="4" rx="1" fill="#2f7d5b"/><circle cx="53" cy="8" r="2.4" fill="#d4a017"/><path d="M28 56v-8a4 4 0 0 1 8 0v8z" fill="#8a7d6b"/><rect x="13" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/><rect x="44" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/></svg>`;
+const NABAWI=`<svg viewBox="0 0 64 64" width="42" height="42" role="img" aria-label="المسجد النبوي"><rect x="8" y="38" width="48" height="18" rx="2" fill="#e8dfc9"/><path d="M32 12c8 4 12 9 12 16v10H20V28c0-7 4-12 12-16z" fill="#2f7d5b"/><ellipse cx="32" cy="11" rx="1.7" ry="2.6" fill="#d4a017"/><rect x="50" y="14" width="6" height="24" fill="#f3ede0"/><rect x="49" y="11" width="8" height="4" rx="1" fill="#2f7d5b"/><circle cx="53" cy="8" r="2.4" fill="#d4a017"/><path d="M28 56v-8a4 4 0 0 1 8 0v8z" fill="#8a7d6b"/><rect x="13" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/><rect x="44" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/></svg>`;
 const houseIcon=k=>k==='sira'?NABAWI:HOUSES[k].icon;
 const Snd=(()=>{
   let ctx=null,on=true;
