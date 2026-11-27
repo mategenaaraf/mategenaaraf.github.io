@@ -64,6 +64,7 @@ body[data-g="6"]{--g1:#ef5a5f;--g2:#a8252d;--g3:#4a0b12;--ac:#ffd36a}
 .row{display:flex;gap:10px}.row .big{flex:1}
 .stars3{color:#ffd45e;text-shadow:0 0 18px #ffd45e;font-size:54px;text-align:center;letter-spacing:6px}
 .stars3 span{display:inline-block;animation:pop .6s both}
+.hdr{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 10px;padding:11px 14px;border-radius:16px;background:linear-gradient(135deg,#231a6b,#5a24a8);border:2px solid #fff;color:#fff;font-size:20px;font-weight:800;line-height:1.5;text-align:center;box-shadow:0 6px 18px #0006,0 0 0 3px #ffffff30;animation:pop .35s both}.hdr svg{flex:none;color:#ffd36a}.hdr .sn{color:#ffd36a;font-size:23px;text-shadow:0 0 12px #ffd36a77}.hdr.long{font-size:17px}.hdr.long .sn{font-size:19px}
 .tag{display:inline-block;margin-bottom:8px;font-size:12px;background:#0004;border-radius:10px;padding:2px 9px}
 canvas{position:fixed;inset:0;pointer-events:none;z-index:9}
 .warn{font-size:13px;background:#ffe08a22;border:1px solid #ffe08a66;border-radius:12px;padding:8px 10px;margin-top:10px}
@@ -228,16 +229,17 @@ let R;
 function start(sec){sfx("start");const qs=pick(sec,10);if(!qs.length)return;R={qs,i:0,ok:0,streak:0,sec};show()}
 function show(){
  const q=R.qs[R.i];let body="",opts=[];
- const tagHTML=(q.tag?`<div class="tag">${q.tag}</div>`:"");
- if(q.kind==="blank"){body=`${tagHTML}<div class="q ayah">${q.pre} <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span> ${q.post}</div>`;opts=[q.ans,...q.pool];}
- else if(q.kind==="verse"){body=`${tagHTML}<div class="q ayah">${q.stem}</div>`;opts=[q.ans,...q.pool];}
- else if(q.kind==="half"){body=`${tagHTML}<div class="q ayah">${q.head} <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>`;opts=[q.ans,...q.pool];}
- else if(q.kind==="surah"){body=`${tagHTML}<div class="q ayah">${q.stem}</div>`;opts=[q.ans,...q.pool.slice(0,q.n-1)];}
+ const ICON=`<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 6c-2-1.5-5-2-8-1.6v13c3-.4 6 .1 8 1.6 2-1.5 5-2 8-1.6v-13C17 4 14 4.5 12 6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 6v13" stroke="currentColor" stroke-width="1.8"/></svg>`;
+ const tagHTML=(q.tag?`<div class="hdr ${q.tag.length>34?"long":""}">${ICON}<span>${q.tag.replace(/من سورة ([^؟]+)/,'من <b class="sn">سورة $1</b>')}</span></div>`:"");
+ if(q.kind==="blank"){body=`<div class="q ayah">${q.pre} <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span> ${q.post}</div>`;opts=[q.ans,...q.pool];}
+ else if(q.kind==="verse"){body=`<div class="q ayah">${q.stem}</div>`;opts=[q.ans,...q.pool];}
+ else if(q.kind==="half"){body=`<div class="q ayah">${q.head} <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>`;opts=[q.ans,...q.pool];}
+ else if(q.kind==="surah"){body=`<div class="q ayah">${q.stem}</div>`;opts=[q.ans,...q.pool.slice(0,q.n-1)];}
  else{body=`<div class="q">${q.q}</div>`;opts=q.opts.slice();}
  const isText=["blank","verse","half"].includes(q.kind);
  const order=q.kind==="tf"?opts.map((o,i)=>i):shuf(opts.map((o,i)=>i));
  const srcHTML=`<div class="src ${q.off?"":"unoff"}">${q.off?"✔ رسمي":"⚠ غير رسمي"} · ${q.src||""}</div>`;
- app.innerHTML=`<div class="card"><div class="stat"><div>سؤال ${R.i+1}/${R.qs.length}</div><div>${R.streak>=3?`<span class="fire">🔥</span>`:"🔥"} ${R.streak}</div><div>⭐ ${R.ok}</div></div><div class="bar"><i style="width:${R.i/R.qs.length*100}%"></i></div>${body}
+ app.innerHTML=`${tagHTML}<div class="card"><div class="stat"><div>سؤال ${R.i+1}/${R.qs.length}</div><div>${R.streak>=3?`<span class="fire">🔥</span>`:"🔥"} ${R.streak}</div><div>⭐ ${R.ok}</div></div><div class="bar"><i style="width:${R.i/R.qs.length*100}%"></i></div>${body}
  <div id="opts">${order.map(i=>`<button class="opt ${isText?"ayah":""}" data-i="${i}">${opts[i]}</button>`).join("")}</div><div class="fb" id="fb"></div>${srcHTML}</div>`;
  (()=>{const q0=document.querySelector(".q"),len=q0.textContent.length;q0.style.fontSize=(len<50?34:len<90?30:len<140?26:len<200?23:20)+"px";
   const os=[...document.querySelectorAll(".opt")],ml=Math.max(...os.map(o=>o.textContent.length));const f=ml<=25?24:ml<=50?21:ml<=90?18:ml<=140?16:14;os.forEach(o=>{o.style.fontSize=f+"px";if(f<=18)o.style.padding="7px 10px"})})();
