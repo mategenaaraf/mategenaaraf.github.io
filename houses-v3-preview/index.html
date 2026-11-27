@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12263f">
+<title>البيوت الأربعة</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="../houses-v2/icon-192.png">
+<link rel="apple-touch-icon" href="../houses-v2/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{--ink:#f4efe6;--gold:#f2c14e;--c1:#12263f;--c2:#1d3b5e;--acc:#f2c14e;--card:rgba(255,255,255,.08);--line:rgba(255,255,255,.16)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Tahoma,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{color:var(--ink);background:var(--c1);overflow-x:hidden;transition:background .6s}
+body[data-house="ibadat"]{--c1:#0f3b2b;--c2:#1f6a4b;--acc:#7ee0ae}
+body[data-house="sira"]{--c1:#4a2610;--c2:#a85f27;--acc:#ffc27a}
+body[data-house="quran"]{--c1:#0c1b3a;--c2:#27508a;--acc:#9fd0ff}
+body[data-house="hadith"]{--c1:#2a1745;--c2:#6a4698;--acc:#d9b8ff}
+#bg{position:fixed;inset:0;z-index:0;background:radial-gradient(120% 80% at 50% 0%,var(--c2) 0%,var(--c1) 62%);transition:background .6s}
+#bg::before,#bg::after{content:"";position:absolute;inset:-20%;background-image:radial-gradient(circle,rgba(255,255,255,.55) 1.2px,transparent 1.6px),radial-gradient(circle,rgba(255,255,255,.3) 1px,transparent 1.4px);background-size:90px 90px,53px 53px;background-position:0 0,20px 30px;animation:drift 40s linear infinite;opacity:.35}
+#bg::after{background-size:140px 140px,77px 77px;animation-duration:70s;animation-direction:reverse;opacity:.22}
+body[data-house="ibadat"] #bg::before{background-image:radial-gradient(circle at 50% 50%,transparent 20px,rgba(255,255,255,.07) 21px,rgba(255,255,255,.07) 23px,transparent 24px);background-size:60px 60px;opacity:.9}
+body[data-house="sira"] #bg::before{background-image:linear-gradient(135deg,rgba(255,255,255,.06) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.06) 75%,transparent 75%);background-size:50px 50px;opacity:.9}
+@keyframes drift{from{transform:translateY(0)}to{transform:translateY(90px)}}
+.wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px 70px}
+h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:.2px}
+.sub{color:#d3dbe8;font-size:.95rem;line-height:1.7;margin-bottom:18px}
+.logo{text-align:center;margin:8px 0 14px}
+.logo .moon{display:inline-block;font-size:3.4rem;animation:float 3.5s ease-in-out infinite;filter:drop-shadow(0 6px 14px rgba(242,193,78,.45))}
+@keyframes float{50%{transform:translateY(-8px) rotate(4deg)}}
+.hero h1{text-align:center;background:linear-gradient(90deg,#fff,var(--gold),#fff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 4s linear infinite;font-size:2.3rem}
+@keyframes shine{to{background-position:-200% 0}}
+.hero .sub{text-align:center}
+.grid{display:grid;gap:12px}
+.modes{grid-template-columns:repeat(3,1fr)}
+.houses{grid-template-columns:1fr 1fr}
+.card{position:relative;overflow:hidden;background:var(--card);backdrop-filter:blur(6px);border:1.5px solid var(--line);border-radius:18px;padding:16px 10px;text-align:center;cursor:pointer;color:var(--ink);font-size:1rem;font-weight:600;transition:transform .2s,box-shadow .25s,border-color .25s;animation:cardIn .55s cubic-bezier(.2,.9,.3,1.2) both}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}
+@keyframes cardIn{from{opacity:0;transform:translateY(26px) scale(.9)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.35);border-color:var(--gold)}
+.card:active{transform:scale(.95)}
+.card::after{content:"";position:absolute;top:0;left:-70%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);transform:skewX(-20deg);animation:sheen 5s ease-in-out infinite}
+@keyframes sheen{0%,60%{left:-70%}100%{left:130%}}
+.card small{display:block;color:#cdd6e4;font-size:.74rem;margin-top:5px;font-weight:400;line-height:1.5}
+.card .ic{font-size:1.9rem;display:flex;align-items:center;justify-content:center;min-height:52px;animation:float 4s ease-in-out infinite}
+.hcard{border-top:5px solid var(--hc);background:linear-gradient(160deg,color-mix(in srgb,var(--hc) 35%,transparent),var(--card))}
+.hcard.go{animation:zoomOut .4s ease forwards}
+@keyframes zoomOut{to{transform:scale(1.15);opacity:0}}
+.note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:.85rem;margin-bottom:16px;color:#dfe6f1;line-height:1.7}
+.screen{animation:enter .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enter{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+/* question */
+.hud{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.pill{background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:.85rem;display:flex;align-items:center;gap:6px}
+.streak{transition:transform .2s}
+.streak.hot{background:linear-gradient(90deg,#ff8a00,#e52e71);border-color:transparent;animation:hot 1s ease-in-out infinite}
+@keyframes hot{50%{transform:scale(1.08);box-shadow:0 0 16px rgba(255,120,0,.7)}}
+.timer{position:relative;width:54px;height:54px;flex:none}
+.timer svg{transform:rotate(-90deg)}
+.timer circle{fill:none;stroke-width:5}
+.timer .bgc{stroke:rgba(255,255,255,.15)}
+.timer .fg{stroke:var(--acc);stroke-linecap:round;transition:stroke .3s}
+.timer b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.timer.low .fg{stroke:#ff5a5a}.timer.low{animation:tick .5s ease-in-out infinite}
+@keyframes tick{50%{transform:scale(1.14)}}
+.qbox{background:linear-gradient(170deg,rgba(0,0,0,.38),rgba(0,0,0,.22));border:1.5px solid var(--line);border-radius:20px;padding:18px 15px;backdrop-filter:blur(8px);box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.qbox.shake{animation:shakeBox .4s}
+@keyframes shakeBox{0%,100%{transform:none}20%{transform:translateX(-8px)}50%{transform:translateX(8px)}80%{transform:translateX(-4px)}}
+.qbox.glow{animation:glowBox .7s}
+@keyframes glowBox{0%{box-shadow:0 0 0 0 rgba(90,230,150,.8)}100%{box-shadow:0 0 0 24px rgba(90,230,150,0)}}
+.prog{height:7px;background:rgba(0,0,0,.35);border-radius:99px;overflow:hidden;margin:10px 0 14px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),#fff);border-radius:99px;transition:width .5s ease}
+.qq{font-size:1.15rem;line-height:1.8;margin-bottom:14px;font-weight:600}
+.opt{display:block;width:100%;background:rgba(255,255,255,.1);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:13px 12px;margin-bottom:10px;font-size:1rem;text-align:right;cursor:pointer;line-height:1.5;transition:transform .15s,background .25s,border-color .25s;animation:optIn .45s both}
+.opt:nth-of-type(1){animation-delay:.05s}.opt:nth-of-type(2){animation-delay:.12s}.opt:nth-of-type(3){animation-delay:.19s}.opt:nth-of-type(4){animation-delay:.26s}
+@keyframes optIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:none}}
+.opt:not(:disabled):hover{transform:translateX(-5px);border-color:var(--acc)}
+.opt:not(:disabled):active{transform:scale(.97)}
+.opt:disabled{cursor:default}
+.opt.right{background:#1f8a5a;border-color:#7dffbb;animation:rightPulse .7s ease-out}
+.opt.wrong{background:#8a2f35;border-color:#ff8f8f;animation:shake .4s}
+.opt.dim{opacity:.45}
+@keyframes rightPulse{0%{box-shadow:0 0 0 0 rgba(125,255,187,.8);transform:scale(1)}40%{transform:scale(1.04)}100%{box-shadow:0 0 0 18px rgba(125,255,187,0);transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.ex{background:rgba(0,0,0,.35);border-radius:12px;padding:12px;font-size:.92rem;line-height:1.8;margin-top:6px;animation:pop .35s both}
+.ex a{color:var(--acc);word-break:break-all}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.btn{background:linear-gradient(180deg,#ffd873,var(--gold));color:#2a1f05;border:0;border-radius:14px;padding:13px 24px;font-size:1.02rem;font-weight:800;cursor:pointer;margin:12px 0 0 8px;box-shadow:0 5px 0 #b88a1c,0 8px 18px rgba(0,0,0,.3);transition:transform .1s,box-shadow .1s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #b88a1c}
+.btn.outline{background:transparent;border:2px solid var(--line);color:var(--ink);box-shadow:none}
+.btn.outline:active{transform:scale(.96)}
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);z-index:60;background:linear-gradient(90deg,#ff8a00,#e52e71);color:#fff;font-weight:800;padding:10px 22px;border-radius:99px;font-size:1.15rem;box-shadow:0 8px 24px rgba(0,0,0,.4);animation:toast 1.3s ease forwards;pointer-events:none;white-space:nowrap}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,20px) scale(.6)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-24px)}}
+.pts{position:fixed;z-index:60;font-weight:800;color:#7dffbb;font-size:1.3rem;animation:ptsUp 1s ease forwards;pointer-events:none}
+@keyframes ptsUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-60px)}}
+/* result */
+.result{background:linear-gradient(170deg,rgba(0,0,0,.4),rgba(0,0,0,.2));border:1.5px solid var(--line);border-radius:22px;padding:22px 16px;text-align:center;margin-top:10px;animation:resultPop .6s cubic-bezier(.2,.9,.3,1.3) both;position:relative;z-index:2}
+@keyframes resultPop{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+.stars{font-size:2.4rem;letter-spacing:6px;margin-bottom:4px}
+.stars span{display:inline-block;opacity:0;animation:starIn .5s forwards}
+@keyframes starIn{0%{opacity:0;transform:scale(0) rotate(-90deg)}70%{transform:scale(1.4) rotate(10deg)}100%{opacity:1;transform:scale(1)}}
+.stars .off{filter:grayscale(1) brightness(.5)}
+.big{font-size:3rem;font-weight:800;color:var(--gold)}
+.res-stats{display:flex;justify-content:center;gap:10px;margin:10px 0 4px;flex-wrap:wrap}
+.miss{background:rgba(0,0,0,.35);border-radius:14px;padding:12px;margin-top:10px;font-size:.9rem;line-height:1.8;text-align:right;animation:pop .4s both;position:relative;z-index:2}
+.miss a{color:var(--acc)}
+.disc{font-size:.75rem;color:#b9c3d3;margin-top:24px;line-height:1.7}
+.hidden{display:none}
+#fx{position:fixed;inset:0;z-index:55;pointer-events:none}
+.sndbtn{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:14px;z-index:70;background:rgba(0,0,0,.45);color:#fff;border:1.5px solid var(--line);border-radius:50%;width:46px;height:46px;font-size:1.2rem;cursor:pointer;transition:transform .12s}
+.sndbtn:active{transform:scale(.9)}
+.bump{animation:scoreBump .5s;display:inline-block}
+@keyframes scoreBump{0%{transform:scale(1)}40%{transform:scale(1.5);color:var(--gold)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.stars span{opacity:1}}
+</style>
+</head>
+<body data-house="">
+<div id="bg"></div>
+<canvas id="fx"></canvas>
+<button id="snd" class="sndbtn" aria-label="الصوت">🔊</button>
+<div class="wrap" id="app"></div>
+<script src="data.js"></script>
+<script>
+const NABAWI=`<svg viewBox="0 0 64 64" width="42" height="42" role="img" aria-label="المسجد النبوي"><rect x="8" y="38" width="48" height="18" rx="2" fill="#e8dfc9"/><path d="M32 12c8 4 12 9 12 16v10H20V28c0-7 4-12 12-16z" fill="#2f7d5b"/><ellipse cx="32" cy="11" rx="1.7" ry="2.6" fill="#d4a017"/><rect x="50" y="14" width="6" height="24" fill="#f3ede0"/><rect x="49" y="11" width="8" height="4" rx="1" fill="#2f7d5b"/><circle cx="53" cy="8" r="2.4" fill="#d4a017"/><path d="M28 56v-8a4 4 0 0 1 8 0v8z" fill="#8a7d6b"/><rect x="13" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/><rect x="44" y="44" width="5" height="6" rx="2.5" fill="#b9ac90"/></svg>`;
+const houseIcon=k=>k==='sira'?NABAWI:HOUSES[k].icon;
+const Snd=(()=>{
+  let ctx=null,on=true;
+  try{on=localStorage.getItem('bh_sound')!=='off'}catch(e){}
+  function ac(){try{if(!ctx)ctx=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();return ctx}catch(e){return null}}
+  function tone(f,d,type,vol,delay,fEnd){
+    if(!on)return;const c=ac();if(!c)return;
+    type=type||'sine';vol=vol||0.16;delay=delay||0;
+    const t0=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();
+    o.type=type;o.frequency.setValueAtTime(f,t0);
+    if(fEnd)o.frequency.exponentialRampToValueAtTime(fEnd,t0+d);
+    g.gain.setValueAtTime(0.0001,t0);g.gain.exponentialRampToValueAtTime(vol,t0+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t0+d);
+    o.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+d+0.05);
+  }
+  return {
+    get on(){return on},
+    toggle(){on=!on;try{localStorage.setItem('bh_sound',on?'on':'off')}catch(e){}return on},
+    tap(){tone(520,0.06,'triangle',0.10)},
+    correct(){tone(523,0.12,'sine',0.20);tone(784,0.20,'sine',0.20,0.10)},
+    streak(n){const b=523*Math.pow(1.122,Math.min(n,6));tone(b,0.1,'triangle',0.18);tone(b*1.26,0.1,'triangle',0.18,0.08);tone(b*1.5,0.22,'triangle',0.2,0.16)},
+    wrong(){tone(240,0.3,'sawtooth',0.08,0,150)},
+    timeout(){tone(330,0.18,'square',0.07,0,220);tone(220,0.3,'square',0.07,0.18,150)},
+    tick(){tone(900,0.04,'square',0.05)},
+    next(){tone(420,0.09,'triangle',0.13,0,760)},
+    whoosh(){tone(300,0.22,'sine',0.08,0,900)},
+    finish(){[523,659,784,1047].forEach((f,i)=>tone(f,i===3?0.5:0.14,'triangle',0.2,i*0.13))},
+    sad(){tone(392,0.2,'sine',0.14);tone(330,0.2,'sine',0.14,0.2);tone(262,0.4,'sine',0.14,0.4)}
+  };
+})();
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+const sndBtn=document.getElementById('snd');
+function paintSnd(){sndBtn.textContent=Snd.on?'🔊':'🔇';sndBtn.title=Snd.on?'كتم الصوت':'تشغيل الصوت'}
+sndBtn.addEventListener('click',()=>{Snd.toggle();paintSnd();Snd.tap()});
+paintSnd();
+const MODES=[
+ {id:'kids',label:'صغار',sub:'٧–١٢ سنة',icon:'🧒',levels:[1],round:5,time:30,note:'أسئلة مكتوبة للأطفال بتقدّم الأولوية، وبعدها الأسهل من كل البنك. جولة من ٥ أسئلة، وقتك ٣٠ ثانية لكل سؤال.'},
+ {id:'youth',label:'شباب',sub:'١٣–١٧ سنة',icon:'🧑',levels:[1,2],round:8,time:25,note:'أسئلة سهلة ومتوسطة، جولة من ٨ أسئلة، ٢٥ ثانية لكل سؤال.'},
+ {id:'adults',label:'كبار',sub:'كل المستويات',icon:'🎓',levels:[1,2,3],round:8,time:20,note:'أسئلة متقدمة مكتوبة للكبار بتقدّم الأولوية، وبعدها باقي مستويات البنك. جولة من ٨ أسئلة، ٢٠ ثانية لكل سؤال.'}
+];
+const AR=n=>String(n).replace(/[0-9]/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let mode=null,house=null,round=[],idx=0,picked=-1,answers=[],streak=0,bestStreak=0,points=0,tLeft=0,tTotal=0,tId=null,tStart=0;
+const app=document.getElementById('app');
+const setHouse=k=>{document.body.dataset.house=k||''};
+const R=2*Math.PI*22;
+
+/* confetti */
+const fx=document.getElementById('fx'),fctx=fx.getContext('2d');let parts=[],raf=null;
+function sizeFx(){fx.width=innerWidth;fx.height=innerHeight}
+addEventListener('resize',sizeFx);sizeFx();
+function confetti(n,power){
+  const cols=['#f2c14e','#ff6b6b','#6bd6ff','#7dffbb','#d9b8ff','#fff'];
+  for(let i=0;i<n;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*80,y:innerHeight*.35,vx:(Math.random()-.5)*(power||14),vy:-Math.random()*(power||14)-4,g:.35,r:Math.random()*6+3,rot:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[i%cols.length],life:120+Math.random()*60});
+  if(!raf)loop();
+}
+function loop(){
+  fctx.clearRect(0,0,fx.width,fx.height);
+  parts=parts.filter(p=>p.life>0&&p.y<fx.height+20);
+  parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.rot+=p.vr;p.life--;fctx.save();fctx.translate(p.x,p.y);fctx.rotate(p.rot);fctx.fillStyle=p.c;fctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);fctx.restore()});
+  raf=parts.length?requestAnimationFrame(loop):null;
+  if(!raf)fctx.clearRect(0,0,fx.width,fx.height);
+}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1400)}
+function floatPts(txt,el){const r=el.getBoundingClientRect(),d=document.createElement('div');d.className='pts';d.textContent=txt;d.style.left=(r.left+r.width/2-20)+'px';d.style.top=(r.top)+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1000)}
+
+function stopTimer(){if(tId){clearInterval(tId);tId=null}}
+function home(){
+  stopTimer();mode=null;house=null;setHouse('');
+  app.innerHTML=`<div class="screen hero"><div class="logo"><span class="moon">🌙</span></div><h1>البيوت الأربعة</h1>
+  <div class="sub">بنك ${AR(Object.values(HOUSES).reduce((n,h)=>n+h.questions.length,0))} سؤالًا موثّقًا — أربعة بيوت، كل بيت له عالمه. اختر سن اللاعب وبيته، واكسب النقاط قبل ما الوقت يخلص، وابنِ سلسلة إجابات صحيحة 🔥</div>
+  <div class="grid modes">${MODES.map((m,i)=>`<div class="card" onclick="pickMode(${i})"><div class="ic">${m.icon}</div>${m.label}<small>${m.sub}</small></div>`).join('')}</div>
+  <div class="disc">الأسئلة موثقة بمصادرها الرسمية ومعظمها من دار الإفتاء المصرية، واللعبة تعليمية وليست فتوى. مستويات الأسئلة تصنيف تحريري. الجولة بتتحفظ على الجهاز ده بس.</div></div>`;
+}
+function pickMode(i){
+  Snd.tap();stopTimer();setHouse('');
+  mode=MODES[i];
+  const keys=Object.keys(HOUSES);
+  let best={};try{best=JSON.parse(localStorage.getItem('bh_best')||'{}')}catch(e){}
+  app.innerHTML=`<div class="screen"><h1>${mode.icon} ${mode.label}</h1><div class="sub">اختار البيت</div>
+  <div class="note">${mode.note}</div>
+  <div class="grid houses">${keys.map(k=>{const h=HOUSES[k];const n=h.questions.filter(q=>mode.levels.includes(q.lvl)).length;const b=best[mode.id+'_'+k];
+    return `<div class="card hcard" style="--hc:${h.color}" onclick="enterHouse(this,'${k}')"><div class="ic">${houseIcon(k)}</div>${h.name}<small>${h.desc}</small><small>${AR(n)} من ${AR(h.questions.length)} سؤالًا في مسارك</small>${b!=null?`<small>🏆 أفضل نتيجة: ${AR(b)}</small>`:''}</div>`}).join('')}</div>
+  <button class="btn outline" onclick="home()">رجوع</button></div>`;
+}
+function enterHouse(el,k){Snd.whoosh();el.classList.add('go');setTimeout(()=>pickHouse(k),320)}
+function pickHouse(k){
+  house=k;setHouse(k);
+  const pool=HOUSES[k].questions.filter(q=>mode.levels.includes(q.lvl));
+  const flag=mode.id;
+  const ordered=[...shuffle(pool.filter(q=>q[flag])),...shuffle(pool.filter(q=>!q[flag]))];
+  round=ordered.slice(0,mode.round).map(q=>({...q,order:shuffle(q.o.map((_,i)=>i))}));
+  idx=0;picked=-1;answers=[];streak=0;bestStreak=0;points=0;
+  renderQ();
+}
+function timerHTML(){return `<div class="timer" id="tm"><svg width="54" height="54" viewBox="0 0 54 54"><circle class="bgc" cx="27" cy="27" r="22"/><circle class="fg" id="tfg" cx="27" cy="27" r="22" stroke-dasharray="${R}" stroke-dashoffset="0"/></svg><b id="tnum">${AR(mode.time)}</b></div>`}
+function renderQ(){
+  const q=round[idx];
+  const hn=HOUSES[house].name;
+  app.innerHTML=`<div class="screen"><div class="hud">
+    <div class="pill">${houseIcon(house).startsWith('<svg')?'':HOUSES[house].icon} ${AR(idx+1)}/${AR(round.length)}</div>
+    <div class="pill streak ${streak>=2?'hot':''}" id="stk">🔥 <span id="stkn">${AR(streak)}</span></div>
+    <div class="pill">⭐ <span id="score">${AR(points)}</span></div>
+    ${timerHTML()}</div>
+   <div class="qbox" id="qb"><div class="prog"><i style="width:${Math.round(idx/round.length*100)}%"></i></div>
+   <div class="qq">${q.q}</div>
+   ${q.order.map((oi,pos)=>`<button class="opt" id="o${pos}" onclick="pick(${pos})">${q.o[oi]}</button>`).join('')}
+   <div id="ex" class="hidden"></div>
+   <div id="next" class="hidden"></div>
+  </div>
+  <button class="btn outline" onclick="pickMode(MODES.indexOf(mode))">إنهاء الجولة</button></div>`;
+  startTimer();
+}
+function startTimer(){
+  stopTimer();tTotal=mode.time;tLeft=tTotal;tStart=Date.now();
+  tId=setInterval(()=>{
+    if(tPause)return;
+    const el=(Date.now()-tStart)/1000;tLeft=Math.max(0,tTotal-el);
+    const fg=document.getElementById('tfg'),num=document.getElementById('tnum'),tm=document.getElementById('tm');
+    if(!fg){stopTimer();return}
+    fg.setAttribute('stroke-dashoffset',R*(1-tLeft/tTotal));
+    const sec=Math.ceil(tLeft);
+    if(num.textContent!==AR(sec)){num.textContent=AR(sec);if(sec<=5&&sec>0){Snd.tick();vib(15)}}
+    tm.classList.toggle('low',tLeft<=5);
+    if(tLeft<=0){stopTimer();timeUp()}
+  },100);
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&tId){tPause=Date.now()}else if(tId&&typeof tPause==='number'){tStart+=Date.now()-tPause;tPause=null}});
+let tPause=null;
+function reveal(pos,ok,timedOut){
+  const q=round[idx];
+  q.order.forEach((oi,p)=>{const b=document.getElementById('o'+p);b.disabled=true;
+    if(oi===q.a)b.classList.add('right');else if(p===pos)b.classList.add('wrong');else b.classList.add('dim');});
+  const prog=document.querySelector('.prog i');if(prog)prog.style.width=Math.round((idx+1)/round.length*100)+'%';
+  const kids=mode.id==='kids';
+  const head=timedOut?(kids?'الوقت خلص! الصح: ':'⏰ انتهى الوقت. الصحيح: ')+q.o[q.a]:ok?(kids?'برافو عليك! إجابة صح 🌟':'✔ إجابة صحيحة'):(kids?'مش مشكلة يا بطل! الصح: ':'✘ الصحيح: ')+q.o[q.a];
+  const ex=document.getElementById('ex');ex.className='ex';
+  ex.innerHTML=`<b>${head}</b><br>${q.ex}<br>${q.srcUrl?`<a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a>`:`<span class="srcplain">المصدر: ${q.srcLabel}</span>`}`;
+  const nx=document.getElementById('next');nx.className='';
+  nx.innerHTML=`<button class="btn" onclick="${idx+1>=round.length?'result()':'goNext()'}">${idx+1>=round.length?'شوف نتيجتك 🏁':'السؤال التالي'}</button>`;
+  const stk=document.getElementById('stk');document.getElementById('stkn').textContent=AR(streak);stk.classList.toggle('hot',streak>=2);
+  const sc=document.getElementById('score');sc.textContent=AR(points);
+}
+function pick(pos){
+  if(picked!==-1)return;picked=pos;stopTimer();
+  const q=round[idx];const ok=q.order[pos]===q.a;answers.push(ok);
+  const qb=document.getElementById('qb');
+  if(ok){
+    streak++;bestStreak=Math.max(bestStreak,streak);
+    const bonus=Math.round(5*tLeft/tTotal),sb=streak>=2?Math.min(streak-1,5)*2:0;
+    const gain=10+bonus+sb;points+=gain;
+    if(streak>=2)Snd.streak(streak);else Snd.correct();
+    vib(30);qb.classList.add('glow');
+    floatPts('+'+AR(gain),document.getElementById('o'+pos));
+    if(streak>=2)toast('🔥 '+AR(streak)+' إجابات صح متتالية!');
+    document.getElementById('score').classList.add('bump');
+    confetti(streak>=3?40:14,streak>=3?12:7);
+  }else{streak=0;Snd.wrong();vib([60,40,60]);qb.classList.add('shake')}
+  reveal(pos,ok,false);
+}
+function timeUp(){
+  if(picked!==-1)return;picked=-2;answers.push(false);streak=0;Snd.timeout();vib([80,40,80]);
+  document.getElementById('qb').classList.add('shake');
+  reveal(-1,false,true);
+}
+function goNext(){Snd.next();idx++;picked=-1;renderQ()}
+function result(){
+  stopTimer();document.querySelectorAll('.toast,.pts').forEach(e=>e.remove());
+  const score=answers.filter(Boolean).length;const kids=mode.id==='kids';const n=round.length;
+  const ratio=score/n;const st=ratio===1?3:ratio>=.6?2:ratio>=.3?1:0;
+  if(st>=2){Snd.finish();confetti(st===3?160:90,18);if(st===3)setTimeout(()=>confetti(100,16),600)}else Snd.sad();
+  vib(st>=2?[60,40,60,40,120]:40);
+  const msg=score===n?(kids?'بطل! جاوبت صح على كل الأسئلة 🌟':'جولة كاملة! جرّب بيتًا تانيًا.')
+    :ratio>=.5?'نتيجة حلوة. راجع اللي فاتك تحت.':(kids?'كل غلطة بتعلمنا حاجة جديدة. جرّب تاني!':'البيوت التانية مستنياك، وكل غلطة اتصححت بمرجعها.');
+  const misses=round.filter((q,i)=>!answers[i]);
+  app.innerHTML=`<div class="screen"><div class="result"><div class="stars">${[0,1,2].map(i=>`<span class="${i<st?'':'off'}" style="animation-delay:${.3+i*.35}s">⭐</span>`).join('')}</div>
+   <div class="big" id="cnt">${AR(score)} من ${AR(n)}</div><p>${msg}</p>
+   <div class="res-stats"><div class="pill">⭐ النقاط: ${AR(points)}</div><div class="pill">🔥 أطول سلسلة: ${AR(bestStreak)}</div></div>
+   <button class="btn" onclick="pickHouse(house)">العب تاني</button>
+   <button class="btn outline" onclick="pickMode(MODES.indexOf(mode))">البيوت</button>
+   <button class="btn outline" onclick="home()">البداية</button></div>
+   ${misses.map(q=>`<div class="miss"><b>${q.q}</b><br>الصحيح: ${q.o[q.a]}<br>${q.ex} — ${q.srcUrl?`<a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a>`:`<span class="srcplain">المصدر: ${q.srcLabel}</span>`}</div>`).join('')}</div>`;
+  try{const best=JSON.parse(localStorage.getItem('bh_best')||'{}');const key=mode.id+'_'+house;
+    if(!best[key]||score>best[key]){best[key]=score;localStorage.setItem('bh_best',JSON.stringify(best));}}catch(e){}
+}
+home();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
