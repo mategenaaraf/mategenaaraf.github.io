@@ -123,7 +123,7 @@ const allVerseText={};Object.keys(B.surahs).forEach(n=>B.surahs[n].verses.forEac
 const NAMES=Object.values(B.surahs).map(s=>s.name).concat(B.extraNames);
 const GN={1:"الأول",2:"الثاني",3:"الثالث",4:"الرابع",5:"الخامس",6:"السادس"};
 const GP=()=>B.G[S.grade];
-function ranges(sec){const P=GP();if(sec==="q1")return P.filter(p=>p.term===1).flatMap(p=>p.r);if(sec==="q2")return P.filter(p=>p.term===2).flatMap(p=>p.r);const p=P.find(p=>p.id===sec);return p?p.r:P.flatMap(p=>p.r)}
+function ranges(sec){const P=GP();if(sec==="q1")return P.filter(p=>p.term===1).flatMap(p=>p.r);if(sec==="q2")return P.filter(p=>p.term===2).flatMap(p=>p.r);if(sec==="p12")return P.filter(p=>p.id==="p1"||p.id==="p2").flatMap(p=>p.r);const p=P.find(p=>p.id===sec);return p?p.r:P.flatMap(p=>p.r)}
 const inR=(R,n,i)=>R.some(([s,a,b])=>s===n&&i+1>=a&&(b===0||i+1<=b));
 const gSurahs=()=>[...new Set(GP().flatMap(p=>p.r.map(x=>x[0])))];
 const META=/في أي مجال يدخل|يُدرس في الصف/;
@@ -184,7 +184,9 @@ function mkRel(id){const [,g,p,k,x]=id.split(":");
 const relIdsM=(g,p)=>{const L=[];REL.D.forEach((d,i)=>{if(d[0]===g&&d[1]===p&&d[2]!=="o")L.push("d:"+i)});
  [...new Set(((REL.S[g]||{})[p])||[])].forEach(n=>{if(B.surahs[n])L.push(`R:${g}:${p}:N:${n}`)});return L};
 const relGen=g=>{const L=[];REL.D.forEach((d,i)=>{if(d[0]===g&&d[1]==="t"&&d[2]!=="o")L.push("d:"+i)});if(g===4)B.islamic.forEach((x,i)=>{if(!META.test(x.q))L.push("i4:"+i)});return L};
-const EXAMS=[{id:"p1",t:"امتحان سبتمبر وأكتوبر",from:[2026,8,1],per:["p1"],qs:"p1"},{id:"p2",t:"امتحان نوفمبر",from:[2026,10,1],per:["p2"],qs:"p2"},{id:"p3",t:"امتحان ديسمبر",from:[2026,11,1],per:["p3"],qs:"p3"},{id:"t1",t:"امتحان الترم الأول (يناير)",from:[2027,0,1],per:["p1","p2","p3"],qs:"q1"},{id:"p4",t:"امتحان فبراير ومارس",from:[2027,1,1],per:[],qs:"p4"},{id:"p5",t:"امتحان أبريل",from:[2027,3,1],per:[],qs:"p5"},{id:"t2",t:"امتحان الترم الثاني (مايو)",from:[2027,4,1],per:[],qs:"q2"}];
+const EXAMS0=[{id:"p1",t:"امتحان سبتمبر وأكتوبر",from:[2026,8,1],per:["p1"],qs:"p1"},{id:"p2",t:"امتحان نوفمبر",from:[2026,10,1],per:["p2"],qs:"p2"},{id:"p3",t:"امتحان ديسمبر",from:[2026,11,1],per:["p3"],qs:"p3"},{id:"t1",t:"امتحان الترم الأول (يناير)",from:[2027,0,1],per:["p1","p2","p3"],qs:"q1"},{id:"p4",t:"امتحان فبراير ومارس",from:[2027,1,1],per:[],qs:"p4"},{id:"p5",t:"امتحان أبريل",from:[2027,3,1],per:[],qs:"p5"},{id:"t2",t:"امتحان الترم الثاني (مايو)",from:[2027,4,1],per:[],qs:"q2"}];
+const EXM={id:"p12",t:"امتحان أكتوبر ونوفمبر (مدمج)",from:[2026,9,1],per:["p1","p2"],qs:"p12"};
+const EX=()=>S.grade>=3?[EXM,...EXAMS0.filter(e=>e.id!=="p1"&&e.id!=="p2")]:EXAMS0;
 const MN=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 const PREVIEW=/[?&]unlock=1/.test(location.search);
 const exOpen=ex=>PREVIEW||Date.now()>=new Date(ex.from[0],ex.from[1],ex.from[2]).getTime();
@@ -287,7 +289,7 @@ function land(){const g=S.grade;$("#land").innerHTML=`<svg viewBox="20 10 360 19
 function theme(){const g=S.grade;land();document.body.dataset.g=g;const m=document.querySelector('meta[name=theme-color]');m&&m.setAttribute("content",{1:"#8e2fc0",2:"#d3480f",3:"#1f5fd0",4:"#0b5d3b",5:"#0e8a94",6:"#a8252d"}[g])}
 
 // ---- monthly exams: screens
-const EXI=e=>EXAMS.find(x=>x.id===e);
+const EXI=e=>EX().find(x=>x.id===e);
 const rating=p=>p>=90?"ممتاز":p>=80?"جيد جدا":p>=65?"جيد":p>=50?"مقبول":"يحتاج مراجعة";
 const starsOf=p=>p>=90?3:p>=75?2:p>=50?1:0;
 function exBar(){const ex=EXI(R.exid);return `<div class="exh">📝 ${ex.t}</div><div class="tmw" id="tmw"><div class="tb"><i id="tbi"></i></div><b id="tmn">${exLimit(S.grade)}</b></div>`}
@@ -295,7 +297,8 @@ function startTimer(onEnd){const L=exLimit(S.grade)*1000,t0=Date.now();R.tv=setI
 function exams(){
  const g=S.grade;theme();
  app.innerHTML=`<h1>📝 الامتحانات الشهرية</h1><div class="sub">الصف ${GN[g]} الابتدائي · ${NQ} سؤالا من منهج الشهر فقط · ${exLimit(g)} ثانية لكل سؤال</div>
- ${EXAMS.map(ex=>{const o=exOpen(ex),st=exStats(g,ex),c=exCounts(g,ex),p=st?Math.round(st.best/st.n*100):0;
+ ${g===4?`<div class="warn" style="margin:8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,200,60,.18);border:1px solid rgba(255,200,60,.5);font-size:13px;line-height:1.7">⚠ <b>افتراض غير مؤكد:</b> توزيع دروس التربية الدينية للصف الرابع على الأشهر مرتب بحسب ترتيب الدروس في الجدول الرسمي لأن عمود الأشهر غير واضح فيه. سيُعدَّل عند الحصول على الجدول الرسمي.</div>`:""}
+ ${EX().map(ex=>{const o=exOpen(ex),st=exStats(g,ex),c=exCounts(g,ex),p=st?Math.round(st.best/st.n*100):0;
   return `<button class="exb ${o?"open":"lock"}" ${o?`onclick="startExam('${ex.id}')"`:"disabled"}><span class="ic">${!o?"🔒":st?(starsOf(p)?"⭐":"📝"):"📝"}</span><span>${ex.t}<small>${o?(c.r?`قرآن + ${c.r>NQ?"":""}تربية دينية (${c.r} سؤال مباشر متاح)`:`قرآن فقط (لا أسئلة تربية دينية موثقة لهذا الشهر بعد)`):exLabel(ex)}${st?` · محاولات ${st.h.length}`:""}</small></span><span class="rt">${st?p+"%":o?"ابدأ":""}</span></button>`}).join("")}
  <div class="row"><button class="big" onclick="progress()">📈 تقدمي</button><button class="big" onclick="home()">الرئيسية</button></div>
  <div class="ref">كل مرة تأتي أسئلة جديدة بترتيب جديد، والأسئلة التي ظهرت في آخر ٣ مرات تُؤجَّل قدر الإمكان. ${PREVIEW?"(وضع المعاينة: كل الامتحانات مفتوحة)":""}</div>`;
@@ -322,10 +325,10 @@ function endExam(){
 }
 function progress(){
  const g=S.grade;theme();let prevP=null;
- const rows=EXAMS.map(ex=>{const st=exStats(g,ex);if(!st)return `<div class="pg"><span class="n">${ex.t.replace("امتحان ","")}</span><span class="b"><i style="width:0"></i></span><span class="v" style="opacity:.6">لم يُجرَّب</span></div>`;
+ const rows=EX().map(ex=>{const st=exStats(g,ex);if(!st)return `<div class="pg"><span class="n">${ex.t.replace("امتحان ","")}</span><span class="b"><i style="width:0"></i></span><span class="v" style="opacity:.6">لم يُجرَّب</span></div>`;
   const p=Math.round(st.best/st.n*100),last=st.h[st.h.length-1].p,d=prevP===null?"":(p>prevP?` ⬆${p-prevP}`:p<prevP?` ⬇${prevP-p}`:" =");prevP=p;
   return `<div class="pg"><span class="n">${ex.t.replace("امتحان ","")}</span><span class="b"><i data-w="${p}"></i></span><span class="v">${p}%${d}</span></div>`}).join("");
- const done=EXAMS.map(ex=>exStats(g,ex)).filter(Boolean);
+ const done=EX().map(ex=>exStats(g,ex)).filter(Boolean);
  const avg=done.length?Math.round(done.reduce((a,b)=>a+b.best/b.n*100,0)/done.length):0;
  app.innerHTML=`<h1>📈 تقدمي</h1><div class="sub">الصف ${GN[g]} الابتدائي · أفضل نتيجة في كل امتحان</div><div class="card">${rows}<div style="text-align:center;margin-top:10px"><span class="chip">امتحانات مجرَّبة ${done.length}/${EXAMS.length}</span><span class="chip">المتوسط ${avg}% · ${done.length?rating(avg):"-"}</span></div></div>
  <div class="row"><button class="big m2" onclick="exams()">الامتحانات</button><button class="big" onclick="home()">الرئيسية</button></div>`;
