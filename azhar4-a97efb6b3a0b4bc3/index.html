@@ -86,10 +86,19 @@ body.flashbad{animation:flb .45s}@keyframes flb{30%{box-shadow:inset 0 0 90px 30
 .cnt{font-size:56px;font-weight:900;color:#ffe08a;text-align:center;text-shadow:0 0 20px #ffd45e}
 .shine{animation:pop .6s both,glow 1.4s .6s infinite alternate}@keyframes glow{to{filter:drop-shadow(0 0 22px #ffd45e)}}
 
+.tmw{display:flex;align-items:center;gap:8px;margin:0 0 8px}.tmw .tb{flex:1;height:14px;border-radius:9px;background:#0005;overflow:hidden;border:1px solid #fff4}.tmw .tb i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#7dffb0,#ffe08a);transition:width .12s linear}.tmw.low .tb i{background:linear-gradient(90deg,#ff6a5a,#ffb04a)}.tmw b{min-width:44px;text-align:center;font-size:22px;color:#ffe08a;background:#0006;border-radius:12px;padding:1px 6px}.tmw.low b{color:#ff8b80;animation:fire .35s infinite alternate}
+.exh{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#fff;background:linear-gradient(135deg,#7a1fa2,#c2185b);border:2px solid #fff;border-radius:14px;padding:6px 10px;margin:0 0 8px;font-size:15px}
+.exb{display:flex;align-items:center;gap:10px;width:100%;text-align:right;margin:8px 0;padding:12px 14px;border-radius:16px;border:2px solid #ffffff55;background:#ffffff14;font-size:17px;font-weight:700}.exb small{display:block;font-weight:500;opacity:.85;font-size:12.5px}.exb .ic{font-size:28px;flex:none}.exb.open{border-color:var(--ac);background:linear-gradient(135deg,#ffffff26,#ffffff10);box-shadow:0 0 18px #ffffff22}.exb.lock{opacity:.6}.exb .rt{margin-right:auto;text-align:center;flex:none;color:var(--ac);font-size:15px}
+.ring{display:block;margin:6px auto;width:190px;height:190px}.ring circle{fill:none;stroke-width:14;stroke-linecap:round}.ring .bgc{stroke:#0005}.ring .fg{stroke:var(--ac);stroke-dasharray:515;stroke-dashoffset:515;transition:stroke-dashoffset 1.6s ease-out;filter:drop-shadow(0 0 8px var(--ac))}.ring text{fill:#fff;font-weight:900;text-anchor:middle}
+.rate{text-align:center;font-size:26px;font-weight:900;color:var(--ac);margin:2px 0}.chip{display:inline-block;background:#0005;border-radius:10px;padding:3px 10px;margin:3px;font-size:13.5px}.newrec{display:inline-block;background:linear-gradient(135deg,#ffd45e,#ff8a3d);color:#3b1a00;border-radius:12px;padding:3px 12px;font-weight:900;animation:fire .5s infinite alternate}
+.pg{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:14px}.pg .n{flex:0 0 118px;font-weight:700}.pg .b{flex:1;height:20px;border-radius:10px;background:#0005;overflow:hidden}.pg .b i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff7ac0,#ffd36a,#6cffb0);transition:width 1s ease-out}.pg .v{flex:0 0 74px;text-align:left;font-weight:800;color:var(--ac)}
+.cd{font-size:120px;font-weight:900;text-align:center;color:#ffe08a;text-shadow:0 0 30px #ffd45e;animation:ban 1s ease-out both;margin:30px 0}
+.cert{width:100%;border-radius:12px;border:3px solid var(--ac);display:block;margin:10px 0;background:#fff}.nm{width:100%;padding:10px;border-radius:12px;border:2px solid var(--ac);background:#fff;color:#222;font:inherit;font-size:18px;text-align:center}
+
 </style></head><body>
 <div class="crescent"></div><div class="land" id="land"></div><div class="stars"></div><canvas id="cv"></canvas><canvas id="bg" style="position:fixed;inset:0;pointer-events:none;z-index:0"></canvas>
 <main id="app"></main>
-<script src="data.js"></script>
+<script src="data.js"></script><script src="rel.js"></script>
 <script>
 const $=s=>document.querySelector(s),app=$("#app");
 const S=JSON.parse(localStorage.getItem("az4")||"null")||{seen:{},stars:0,streak:0,best:0,played:0,rounds:0};S.grade=S.grade||4;S.mute=!!S.mute;
@@ -117,10 +126,13 @@ const GP=()=>B.G[S.grade];
 function ranges(sec){const P=GP();if(sec==="q1")return P.filter(p=>p.term===1).flatMap(p=>p.r);if(sec==="q2")return P.filter(p=>p.term===2).flatMap(p=>p.r);const p=P.find(p=>p.id===sec);return p?p.r:P.flatMap(p=>p.r)}
 const inR=(R,n,i)=>R.some(([s,a,b])=>s===n&&i+1>=a&&(b===0||i+1<=b));
 const gSurahs=()=>[...new Set(GP().flatMap(p=>p.r.map(x=>x[0])))];
-const ISL=g=>g===4?B.islamic:(B.islG&&B.islG[g])||[];
+const META=/في أي مجال يدخل|يُدرس في الصف/;
+const ISLA=B.islamic.map((x,i)=>[x,i]).filter(([x])=>!META.test(x.q));
+const ISL=g=>g===4?ISLA.map(a=>a[0]):[];
+const DQ=g=>REL.D.map((d,i)=>[d,i]).filter(([d])=>d[0]===g);
 function ids(sec){
  const L=[];const R=ranges(sec);
- if(sec==="islamic"||sec==="mix") ISL(S.grade).forEach((x,i)=>L.push(`i${S.grade}:`+i));
+ if(sec==="islamic"||sec==="mix"){ISLA.forEach(a=>{if(S.grade===4)L.push("i4:"+a[1])});DQ(S.grade).forEach(([d,i])=>L.push("d:"+i))}
  if(sec!=="islamic"){
   [...new Set(R.map(x=>x[0]))].forEach(n=>{const V=SUR(n).verses;V.forEach((v,i)=>{if(!inR(R,n,i))return;const w=WCOUNT(v);
    if(w>=4&&i+1<V.length&&WCOUNT(V[i+1])<=28)L.push(`n:${n}:${i}`);
@@ -134,7 +146,8 @@ function ids(sec){
 function mk(id){const q=mk0(id);if(q&&q.pool){q.pool=[...new Set(q.pool)].filter(o=>o!==q.ans)}return q}
 function mk0(id){
  const p=id.split(":"),k=p[0];
- if(k[0]==="i"){const x=ISL(+k.slice(1))[p[1]];return{id,sec:"islamic",kind:x.tf?"tf":"mcq",q:x.q,opts:x.tf?["صح","خطأ"]:x.o,ans:x.tf?(x.a?0:1):x.a,off:x.off,src:x.src}}
+ if(k==="d")return mkD(+p[1]);
+ if(k[0]==="i"){const x=(+k.slice(1)===4?B.islamic[p[1]]:null);return{id,sec:"islamic",kind:x.tf?"tf":"mcq",q:x.q,opts:x.tf?["صح","خطأ"]:x.o,ans:x.tf?(x.a?0:1):x.a,off:x.off,src:x.src}}
  if(k==="x"){const x=B.exam[p[1]];return{id,kind:"surah",stem:x.text,ans:x.name,pool:x.opts.filter(o=>o!==x.name),n:3,tag:"أكمل الآية ثم تخير اسم السورة",off:false,src:"صيغة السؤال ونصه من نموذج شبابيك للصف الرابع (غير رسمي). نص الآية: api.quran.com"}}
  const n=+p[1],i=+p[2],V=SUR(n).verses,v=V[i],nm=SUR(n).name;
  const off=true,src=`المقرر: توزيع منهج القرآن الكريم وتجويده للصف ${GN[S.grade]} الابتدائي 2026/2027 (رسمي، mtrl.azhar.gov.eg/education/curr-2026). نص الآيات: api.quran.com، قورن مع alquran.cloud. موضع الآية: سورة ${nm} آية ${i+1}`;
@@ -147,7 +160,14 @@ function mk0(id){
   const bank=V.join(" ").split(" ").filter(x=>!WAQF.test(x)&&x!==ws[j]&&!ws.includes(x));
   return{id,kind:"blank",pre:ws.slice(0,j).join(" "),post:ws.slice(j+1).join(" "),ans:ws[j],pool:shuf([...new Set(bank)]).slice(0,3),tag:`أكمل الآية من سورة ${nm}`,off,src}}
 }
-const okQ=q=>q&&(q.kind==="tf"||q.kind==="mcq"||(q.pool&&q.pool.length>=2));
+
+function mkD(i){const d=REL.D[i],[g,mo,ty,q,a,w,sid]=d;
+ const src=`غير رسمي: سؤال من نماذج امتحانات منشورة على موقع شبابيك (shbabbek.com/show/${sid})، ${mo[0]==="p"?"والموضوع مطابق لموضوعات الأزهر الرسمية 2026/2027 لشهر "+REL.months[mo]:"ضمن منهج الفصل الأول"}. يحتاج مراجعة معلم`;
+ if(ty==="m")return{id:"d:"+i,sec:"islamic",kind:"mcq",q,opts:[a,...w],ans:0,off:false,src};
+ if(ty==="t")return{id:"d:"+i,sec:"islamic",kind:"tf",q:"صح أم خطأ: "+q,opts:["صح","خطأ"],ans:a?0:1,off:false,src};
+ return{id:"d:"+i,sec:"islamic",kind:"open",q,model:a,off:false,src};
+}
+const okQ=q=>q&&(q.kind==="tf"||q.kind==="mcq"||q.kind==="open"||(q.pool&&q.pool.length>=2));
 function pick(sec,n){ // no repeats until the whole pool for this mode is used, then a new cycle starts
  const pool=ids(sec);
  const take=(from,k)=>{const r=[];for(const id of shuf(from)){if(r.length>=k)break;const q=mk(id);if(okQ(q))r.push(q);else S.seen[id]=1}return r};
@@ -155,6 +175,46 @@ function pick(sec,n){ // no repeats until the whole pool for this mode is used, 
  if(out.length<n){pool.forEach(q=>delete S.seen[q]);const keep=out.map(q=>q.id);out=out.concat(take(pool.filter(q=>!keep.includes(q)),n-out.length))}
  out.forEach(q=>S.seen[q.id]=1);save();return out;
 }
+
+// ---- religious-ed bank per month (rel.js) + monthly exams
+const REL=window.REL,MONTHS=REL.months;
+const GRN={1:"الأول",2:"الثاني",3:"الثالث",4:"الرابع",5:"الخامس",6:"السادس"};
+function mkRel(id){const [,g,p,k,x]=id.split(":");
+ if(k==="N"){const n=+x,cnt=B.surahs[n].verses.length,set=new Set([cnt]);[-3,-2,-1,1,2,3,4,5].forEach(d=>{if(cnt+d>0)set.add(cnt+d)});const w=shuf([...set].filter(v=>v!==cnt)).slice(0,3);return{id,sec:"islamic",kind:"mcq",q:`كم عدد آيات سورة ${B.surahs[n].name}؟`,opts:[cnt,...w].map(String),ans:0,off:true,src:"السورة مقررة في الجدول الرسمي (mtrl.azhar.gov.eg/education/curr-2026). عدد الآيات من api.quran.com"}}}
+const relIdsM=(g,p)=>{const L=[];REL.D.forEach((d,i)=>{if(d[0]===g&&d[1]===p&&d[2]!=="o")L.push("d:"+i)});
+ [...new Set(((REL.S[g]||{})[p])||[])].forEach(n=>{if(B.surahs[n])L.push(`R:${g}:${p}:N:${n}`)});return L};
+const relGen=g=>{const L=[];REL.D.forEach((d,i)=>{if(d[0]===g&&d[1]==="t"&&d[2]!=="o")L.push("d:"+i)});if(g===4)B.islamic.forEach((x,i)=>{if(!META.test(x.q))L.push("i4:"+i)});return L};
+const EXAMS=[{id:"p1",t:"امتحان سبتمبر وأكتوبر",from:[2026,8,1],per:["p1"],qs:"p1"},{id:"p2",t:"امتحان نوفمبر",from:[2026,10,1],per:["p2"],qs:"p2"},{id:"p3",t:"امتحان ديسمبر",from:[2026,11,1],per:["p3"],qs:"p3"},{id:"t1",t:"امتحان الترم الأول (يناير)",from:[2027,0,1],per:["p1","p2","p3"],qs:"q1"},{id:"p4",t:"امتحان فبراير ومارس",from:[2027,1,1],per:[],qs:"p4"},{id:"p5",t:"امتحان أبريل",from:[2027,3,1],per:[],qs:"p5"},{id:"t2",t:"امتحان الترم الثاني (مايو)",from:[2027,4,1],per:[],qs:"q2"}];
+const MN=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const PREVIEW=/[?&]unlock=1/.test(location.search);
+const exOpen=ex=>PREVIEW||Date.now()>=new Date(ex.from[0],ex.from[1],ex.from[2]).getTime();
+const exLabel=ex=>`يفتح في 1 ${MN[ex.from[1]]} ${ex.from[0]}`;
+const NQ=20,PLIM=+((location.search.match(/[?&]lim=(\d+)/)||[])[1]||0),exLimit=g=>PLIM||(g<=3?60:45);
+const relPool=(g,ex)=>ex.per.flatMap(p=>relIdsM(g,p)).concat(ex.id==="t1"?relGen(g):[]);
+S.ex=S.ex||{};S.exr=S.exr||{};
+function exStats(g,ex){return S.ex[g+":"+ex.id]||null}
+function drawExam(ex){
+ const g=S.grade,key=g+":"+ex.id,rec=new Set(S.exr[key]||[]);
+ const qp=ids(ex.qs).filter(i=>i[0]!=="x"&&i[0]!=="i"),rp=relPool(g,ex);
+ const nR=rp.length?Math.min(rp.length,ex.per.length>1?9:8):0,nQ=NQ-nR;
+ const taken=[],verses=new Set(),out=[];
+ const vk=id=>{const p=id.split(":");return p[0]==="R"||p[0]==="d"||p[0]==="i4"?id:p[1]+":"+p[2]};
+ const grab=(list,k)=>{let c=0;const pass=[shuf(list.filter(i=>!rec.has(i))),shuf(list.filter(i=>rec.has(i)))];
+  for(const arr of pass)for(const id of arr){if(c>=k)break;if(taken.includes(id)||verses.has(vk(id)))continue;const q=id[0]==="R"?mkRel(id):mk(id);if(!okQ(q))continue;q.ex=1;out.push(q);taken.push(id);verses.add(vk(id));c++}
+  return c};
+ // Quran: even mix of the four question kinds
+ const kinds=shuf(["n","h","s","b"]).map(k=>qp.filter(i=>i[0]===k)).filter(a=>a.length);
+ let left=nQ,idx=0;const want=kinds.map(()=>0);for(let i=0;i<nQ;i++)want[i%kinds.length]++;
+ kinds.forEach((a,i)=>{left-=grab(a,want[i])});
+ if(left>0)grab(qp,left);
+ // religious: random from the month's own religious pool
+ let r=grab(rp,nR);
+ if(out.length<NQ)grab(qp.concat(rp),NQ-out.length);
+ const res=shuf(out).slice(0,NQ);
+ S.exr[key]=((S.exr[key]||[]).concat(res.map(q=>q.id))).slice(-NQ*3);save();
+ return res;
+}
+function exCounts(g,ex){const qp=ids(ex.qs).filter(i=>i[0]!=="x"&&i[0]!=="i").length;return{q:qp,r:relPool(g,ex).length}}
 // ---- sound / effects
 // ---- sound engine: one shared AudioContext, unlocked on the first touch, master volume + compressor, soft envelopes, persistent mute
 const SND={ // [freq Hz, start s, length s, volume, wave]
@@ -200,14 +260,15 @@ function countUp(el,to){let n=0;const iv=setInterval(()=>{n++;el.textContent=n;i
 let deferred;addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;const b=$("#inst");b&&(b.style.display="block")});
 function home(){
  const g=S.grade,P=GP();
- const qn=ids("quran").length,isn=ISL(g).length;
+ const qn=ids("quran").length,isn=ids("islamic").length,isOff=(g===4?ISLA.filter(a=>a[0].off).length:0);
  app.innerHTML=`<div class="hero">${heroSVG()}</div><h1>رحلة الأزهري الصغير</h1><div class="sub">تدريب القرآن الكريم والتربية الإسلامية، الصف ${GN[g]} الابتدائي</div>
  <div class="grades">${[1,2,3,4,5,6].map(x=>`<button class="gb ${x===g?"on":""}" onclick="setGrade(${x})">${x}</button>`).join("")}</div>
  <div class="lvl">${lvl(S.xp||0)} · ${S.xp||0} نقطة</div><div class="card stat"><div><b>⭐ ${S.stars}</b>نجوم</div><div><b>🔥 ${S.best}</b>أفضل سلسلة</div><div><b>${S.rounds}</b>جولات</div></div>
  <button class="big" onclick="start('q1')">📖 القرآن، الترم الأول</button><button class="big" onclick="start('q2')">📖 القرآن، الترم الثاني</button><button class="big" onclick="start('quran')">📖 القرآن، المقرر كله</button><div class="warn" style="margin:6px 0">حسب شهور المنهج الرسمي 2026/2027</div>${P.map(p=>`<button class="big" onclick="start('${p.id}')">🗓️ ${p.t}</button>`).join("")}
  ${isn?`<button class="big" onclick="start('islamic')">🕌 التربية الإسلامية</button><button class="big" onclick="start('mix')">🎲 جولة مشكلة</button>`:`<div class="warn">التربية الإسلامية لهذا الصف قيد الإعداد.</div>`}
+ <button class="big" onclick="exams()">📝 الامتحانات الشهرية</button>
  <button class="big" id="inst" onclick="deferred&&deferred.prompt()">📲 ثبّت اللعبة على الموبايل</button>
- <div class="warn">نسخة تجريبية خاصة. بنك القرآن للصف ${GN[g]}: ${qn} سؤال من مقرر الأزهر الرسمي 2026/2027. أسئلة التربية الإسلامية (${isn}) ${g===4?"بعضها من نموذج رسمي وبعضها غير رسمي (معلّم بوضوح)":""} وتحتاج مراجعة معلم قبل النشر.</div>
+ <div class="warn">نسخة تجريبية خاصة. بنك القرآن للصف ${GN[g]}: ${qn} سؤال من مقرر الأزهر الرسمي 2026/2027. أسئلة التربية الدينية (${isn}) مباشرة على نمط امتحانات الأزهر، كل سؤال عليه مصدره ${isOff?"(بعضها من نموذج رسمي وأغلبها غير رسمي)":"(كلها غير رسمية من مواقع تعليمية)"} وتحتاج مراجعة معلم قبل النشر.</div>
  <div class="ref">أسئلتك لا تتكرر حتى ينتهي البنك. الأسئلة والاختيارات بترتيب عشوائي.</div>`;
  if(deferred)$("#inst").style.display="block";
  muteBtn();theme();document.querySelectorAll("#app .big:not(#inst)").forEach((b,i)=>b.classList.add("m"+i%6));
@@ -224,6 +285,75 @@ const LM={
 const heroSVG=()=>`<svg viewBox="40 30 320 170" preserveAspectRatio="xMidYMax meet"><defs><radialGradient id="hg2" cx="50%" cy="85%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect x="0" y="0" width="400" height="200" fill="url(#hg2)"/>${LM[S.grade]}</svg>`;
 function land(){const g=S.grade;$("#land").innerHTML=`<svg viewBox="20 10 360 190" preserveAspectRatio="xMidYMax meet"><defs><radialGradient id="hg" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect class="glow" x="0" y="0" width="400" height="200"/>${LM[g]}</svg>`}
 function theme(){const g=S.grade;land();document.body.dataset.g=g;const m=document.querySelector('meta[name=theme-color]');m&&m.setAttribute("content",{1:"#8e2fc0",2:"#d3480f",3:"#1f5fd0",4:"#0b5d3b",5:"#0e8a94",6:"#a8252d"}[g])}
+
+// ---- monthly exams: screens
+const EXI=e=>EXAMS.find(x=>x.id===e);
+const rating=p=>p>=90?"ممتاز":p>=80?"جيد جدا":p>=65?"جيد":p>=50?"مقبول":"يحتاج مراجعة";
+const starsOf=p=>p>=90?3:p>=75?2:p>=50?1:0;
+function exBar(){const ex=EXI(R.exid);return `<div class="exh">📝 ${ex.t}</div><div class="tmw" id="tmw"><div class="tb"><i id="tbi"></i></div><b id="tmn">${exLimit(S.grade)}</b></div>`}
+function startTimer(onEnd){const L=exLimit(S.grade)*1000,t0=Date.now();R.tv=setInterval(()=>{const left=Math.max(0,L-(Date.now()-t0)),i=$("#tbi"),n=$("#tmn"),w=$("#tmw");if(!i){clearInterval(R.tv);return}i.style.width=left/L*100+"%";n.textContent=Math.ceil(left/1000);const low=left<=10000;w.classList.toggle("low",low);if(left<=0){clearInterval(R.tv);R.tv=0;onEnd()}},100)}
+function exams(){
+ const g=S.grade;theme();
+ app.innerHTML=`<h1>📝 الامتحانات الشهرية</h1><div class="sub">الصف ${GN[g]} الابتدائي · ${NQ} سؤالا من منهج الشهر فقط · ${exLimit(g)} ثانية لكل سؤال</div>
+ ${EXAMS.map(ex=>{const o=exOpen(ex),st=exStats(g,ex),c=exCounts(g,ex),p=st?Math.round(st.best/st.n*100):0;
+  return `<button class="exb ${o?"open":"lock"}" ${o?`onclick="startExam('${ex.id}')"`:"disabled"}><span class="ic">${!o?"🔒":st?(starsOf(p)?"⭐":"📝"):"📝"}</span><span>${ex.t}<small>${o?(c.r?`قرآن + ${c.r>NQ?"":""}تربية دينية (${c.r} سؤال مباشر متاح)`:`قرآن فقط (لا أسئلة تربية دينية موثقة لهذا الشهر بعد)`):exLabel(ex)}${st?` · محاولات ${st.h.length}`:""}</small></span><span class="rt">${st?p+"%":o?"ابدأ":""}</span></button>`}).join("")}
+ <div class="row"><button class="big" onclick="progress()">📈 تقدمي</button><button class="big" onclick="home()">الرئيسية</button></div>
+ <div class="ref">كل مرة تأتي أسئلة جديدة بترتيب جديد، والأسئلة التي ظهرت في آخر ٣ مرات تُؤجَّل قدر الإمكان. ${PREVIEW?"(وضع المعاينة: كل الامتحانات مفتوحة)":""}</div>`;
+ muteBtn();document.querySelectorAll("#app .exb").forEach((b,i)=>b.style.animationDelay=i*.06+"s")
+}
+function startExam(id){
+ const ex=EXI(id);if(!exOpen(ex))return;const qs=drawExam(ex);if(qs.length<10){banner("البنك قليل");return}
+ R={qs,i:0,ok:0,streak:0,sec:id,ex:1,exid:id,res:[],t0:Date.now()};
+ let n=3;app.innerHTML=`<h1>📝 ${ex.t}</h1><div class="sub">استعد! ${qs.length} سؤالا</div><div class="cd" id="cd">3</div>`;sfx("start");
+ const iv=setInterval(()=>{n--;const c=$("#cd");if(!c){clearInterval(iv);return}if(n<=0){clearInterval(iv);boom(80);show();return}c.textContent=n;c.style.animation="none";void c.offsetWidth;c.style.animation="";sfx("good")},900);
+}
+function endExam(){
+ const ex=EXI(R.exid),g=S.grade,key=g+":"+ex.id,n=R.qs.length,sc=R.ok,p=Math.round(sc/n*100),st=starsOf(p),prev=S.ex[key];
+ const rec={d:Date.now(),s:sc,n,p,sec:Math.round((Date.now()-R.t0)/1000),to:R.res.filter(x=>x.to).length};
+ const e=prev||{best:0,n,h:[]};const newBest=!prev||sc>e.best;e.best=Math.max(e.best,sc);e.n=n;e.h.push(rec);e.h=e.h.slice(-20);S.ex[key]=e;S.stars+=st;S.rounds++;S.xp=(S.xp||0)+sc*5;save();
+ if(st>=2){boom(280);banner(st===3?"🏆 مبروك!":"👏 أحسنت!")}sfx(st===3?"win":st>=1?"okend":"tryagain");
+ const last=prev&&prev.h[prev.h.length-1];
+ app.innerHTML=`<h1>${ex.t}</h1><div class="card"><svg class="ring" viewBox="0 0 200 200"><circle class="bgc" cx="100" cy="100" r="82"/><circle class="fg" id="fg" cx="100" cy="100" r="82" transform="rotate(-90 100 100)"/><text x="100" y="112" font-size="46" id="rn">0%</text><text x="100" y="140" font-size="18">${sc} / ${n}</text></svg>
+ <div class="rate">${rating(p)}</div><div class="stars3">${[1,2,3].map(i=>`<span style="animation-delay:${i*.3}s">${i<=st?"★":"☆"}</span>`).join("")}</div>
+ <div style="text-align:center">${newBest&&prev?`<span class="newrec">🎉 رقم قياسي جديد</span><br>`:""}<span class="chip">⏱ ${Math.floor(rec.sec/60)}د ${rec.sec%60}ث</span>${rec.to?`<span class="chip">⏰ انتهى وقت ${rec.to} سؤال</span>`:""}${last?`<span class="chip">المرة السابقة ${last.p}% ${p>last.p?"⬆":p<last.p?"⬇":"="}</span>`:""}<span class="chip">أفضل نتيجة ${Math.round(e.best/n*100)}%</span></div></div>
+ <div class="row">${p>=50?`<button class="big m3" onclick="certificate('${ex.id}')">🎓 الشهادة</button>`:""}<button class="big m1" onclick="startExam('${ex.id}')">🔁 امتحان بأسئلة جديدة</button></div>
+ <div class="row"><button class="big m2" onclick="progress()">📈 تقدمي</button><button class="big" onclick="exams()">الامتحانات</button></div>`;
+ requestAnimationFrame(()=>setTimeout(()=>{const f=$("#fg");f&&(f.style.strokeDashoffset=515*(1-p/100));let k=0;const iv=setInterval(()=>{k+=2;const r=$("#rn");if(!r){clearInterval(iv);return}r.textContent=Math.min(k,p)+"%";if(k>=p)clearInterval(iv)},28)},60));
+}
+function progress(){
+ const g=S.grade;theme();let prevP=null;
+ const rows=EXAMS.map(ex=>{const st=exStats(g,ex);if(!st)return `<div class="pg"><span class="n">${ex.t.replace("امتحان ","")}</span><span class="b"><i style="width:0"></i></span><span class="v" style="opacity:.6">لم يُجرَّب</span></div>`;
+  const p=Math.round(st.best/st.n*100),last=st.h[st.h.length-1].p,d=prevP===null?"":(p>prevP?` ⬆${p-prevP}`:p<prevP?` ⬇${prevP-p}`:" =");prevP=p;
+  return `<div class="pg"><span class="n">${ex.t.replace("امتحان ","")}</span><span class="b"><i data-w="${p}"></i></span><span class="v">${p}%${d}</span></div>`}).join("");
+ const done=EXAMS.map(ex=>exStats(g,ex)).filter(Boolean);
+ const avg=done.length?Math.round(done.reduce((a,b)=>a+b.best/b.n*100,0)/done.length):0;
+ app.innerHTML=`<h1>📈 تقدمي</h1><div class="sub">الصف ${GN[g]} الابتدائي · أفضل نتيجة في كل امتحان</div><div class="card">${rows}<div style="text-align:center;margin-top:10px"><span class="chip">امتحانات مجرَّبة ${done.length}/${EXAMS.length}</span><span class="chip">المتوسط ${avg}% · ${done.length?rating(avg):"-"}</span></div></div>
+ <div class="row"><button class="big m2" onclick="exams()">الامتحانات</button><button class="big" onclick="home()">الرئيسية</button></div>`;
+ muteBtn();setTimeout(()=>document.querySelectorAll(".pg .b i[data-w]").forEach(i=>i.style.width=i.dataset.w+"%"),80)
+}
+function certCanvas(ex,st){
+ const c=document.createElement("canvas");c.width=900;c.height=640;const x=c.getContext("2d");const g=S.grade,last=st.h[st.h.length-1],p=Math.round(st.best/st.n*100);
+ const gr=x.createLinearGradient(0,0,900,640);gr.addColorStop(0,"#fffaf0");gr.addColorStop(1,"#f3e6c4");x.fillStyle=gr;x.fillRect(0,0,900,640);
+ x.strokeStyle="#b8860b";x.lineWidth=10;x.strokeRect(18,18,864,604);x.strokeStyle="#0b5d3b";x.lineWidth=3;x.strokeRect(34,34,832,572);
+ x.direction="rtl";x.textAlign="center";const F=n=>`${n}px "Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif`;
+ x.fillStyle="#0b5d3b";x.font="bold "+F(26);x.fillText("رحلة الأزهري الصغير",450,90);
+ x.fillStyle="#b8860b";x.font="bold "+F(58);x.fillText("شهادة تقدير",450,170);
+ x.fillStyle="#333";x.font=F(26);x.fillText("تُمنح هذه الشهادة للطالب / الطالبة",450,230);
+ x.fillStyle="#0b5d3b";x.font="bold "+F(48);x.fillText(S.name||"..............................",450,300);
+ x.fillStyle="#333";x.font=F(26);x.fillText(`لاجتيازه ${ex.t} للصف ${GN[g]} الابتدائي`,450,360);x.fillText("(القرآن الكريم والتربية الدينية)",450,400);
+ x.fillStyle="#b8860b";x.font="bold "+F(34);x.fillText(`النتيجة ${st.best} / ${st.n} (${p}%) · تقدير ${rating(p)}`,450,460);
+ const star=(cx,cy,r,on)=>{x.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;x.lineTo(cx+rr*Math.cos(a),cy+rr*Math.sin(a))}x.closePath();x.fillStyle=on?"#f2b705":"#ddd";x.fill();x.strokeStyle="#b8860b";x.lineWidth=2;x.stroke()};
+ const ns=starsOf(p);[0,1,2].forEach(i=>star(390+i*60,505,24,i<ns));
+ x.fillStyle="#555";x.font=F(20);const d=new Date(last.d);x.fillText(`${d.getDate()} ${MN[d.getMonth()]} ${d.getFullYear()}`,450,566);
+ x.fillStyle="#888";x.font=F(15);x.fillText("شهادة تدريبية من تطبيق تعليمي، وليست وثيقة رسمية من الأزهر الشريف",450,598);
+ return c;
+}
+function certificate(id){
+ const ex=EXI(id),st=exStats(S.grade,ex);if(!st)return;theme();
+ const draw=()=>{const u=certCanvas(ex,st).toDataURL("image/png");$("#ci").src=u;$("#cdl").href=u};
+ app.innerHTML=`<h1>🎓 الشهادة</h1><input class="nm" id="nm" placeholder="اكتب اسم الطالب" value="${(S.name||"").replace(/"/g,"")}"><img class="cert" id="ci" alt="الشهادة"><div class="row"><a class="big m3" id="cdl" download="شهادة.png" style="text-decoration:none;text-align:center">💾 حفظ الصورة</a><button class="big" onclick="exams()">رجوع</button></div><div class="ref">اضغط مطولا على الصورة لحفظها أو مشاركتها</div>`;
+ draw();$("#nm").oninput=e=>{S.name=e.target.value.slice(0,40);save();draw()};boom(120);sfx("win");muteBtn();
+}
 function setGrade(x){S.grade=x;save();home()}
 let R;
 function start(sec){sfx("start");const qs=pick(sec,10);if(!qs.length)return;R={qs,i:0,ok:0,streak:0,sec};show()}
@@ -235,26 +365,33 @@ function show(){
  else if(q.kind==="verse"){body=`<div class="q ayah">${q.stem}</div>`;opts=[q.ans,...q.pool];}
  else if(q.kind==="half"){body=`<div class="q ayah">${q.head} <span class="blank">&nbsp;&nbsp;&nbsp;&nbsp;</span></div>`;opts=[q.ans,...q.pool];}
  else if(q.kind==="surah"){body=`<div class="q ayah">${q.stem}</div>`;opts=[q.ans,...q.pool.slice(0,q.n-1)];}
+ else if(q.kind==="open"){body=`<div class="q">${q.q}</div><div id="mdl" style="display:none;margin:6px 0;padding:10px;border-radius:14px;background:#1fae6233;border:2px solid #7dffb0;font-size:19px;line-height:1.8;text-align:center">${q.model}</div>`;opts=["👁 أظهر الإجابة"];}
  else{body=`<div class="q">${q.q}</div>`;opts=q.opts.slice();}
  const isText=["blank","verse","half"].includes(q.kind);
  const order=q.kind==="tf"?opts.map((o,i)=>i):shuf(opts.map((o,i)=>i));
  const srcHTML=`<div class="src ${q.off?"":"unoff"}">${q.off?"✔ رسمي":"⚠ غير رسمي"} · ${q.src||""}</div>`;
- app.innerHTML=`${tagHTML}<div class="card"><div class="stat"><div>سؤال ${R.i+1}/${R.qs.length}</div><div>${R.streak>=3?`<span class="fire">🔥</span>`:"🔥"} ${R.streak}</div><div>⭐ ${R.ok}</div></div><div class="bar"><i style="width:${R.i/R.qs.length*100}%"></i></div>${body}
+ app.innerHTML=`${R.ex?exBar():""}${tagHTML}<div class="card"><div class="stat"><div>سؤال ${R.i+1}/${R.qs.length}</div><div>${R.streak>=3?`<span class="fire">🔥</span>`:"🔥"} ${R.streak}</div><div>⭐ ${R.ok}</div></div><div class="bar"><i style="width:${R.i/R.qs.length*100}%"></i></div>${body}
  <div id="opts">${order.map(i=>`<button class="opt ${isText?"ayah":""}" data-i="${i}">${opts[i]}</button>`).join("")}</div><div class="fb" id="fb"></div>${srcHTML}</div>`;
  (()=>{const q0=document.querySelector(".q"),len=q0.textContent.length;q0.style.fontSize=(len<50?34:len<90?30:len<140?26:len<200?23:20)+"px";
   const os=[...document.querySelectorAll(".opt")],ml=Math.max(...os.map(o=>o.textContent.length));const f=ml<=25?24:ml<=50?21:ml<=90?18:ml<=140?16:14;os.forEach(o=>{o.style.fontSize=f+"px";if(f<=18)o.style.padding="7px 10px"})})();
- const correct=["blank","verse","half","surah"].includes(q.kind)?0:q.ans;
- document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+ const correct=["blank","verse","half","surah","open"].includes(q.kind)?0:q.ans;
+ const answer=(b,i)=>{
+  if(R.tv){clearInterval(R.tv);R.tv=0}
   document.querySelectorAll(".opt").forEach(x=>x.onclick=null);
-  const i=+b.dataset.i,ok=i===correct;
-  b.classList.add(ok?"ok":"no");
-  if(!ok)document.querySelector(`.opt[data-i="${correct}"]`).classList.add("ok");
-  const rc=b.getBoundingClientRect();flash(ok);if(ok){const pts=10+Math.min(R.streak,5)*2;S.xp=(S.xp||0)+pts;floatTxt("+"+pts,rc.left+rc.width/2-20,rc.top);burstAt(rc.left+rc.width/2,rc.top+rc.height/2,70);R.ok++;R.streak++;S.streak=R.streak;S.best=Math.max(S.best,R.streak);(R.streak%3===0?(sfx("streak"),vib(30)):good());if(R.streak%3===0){boom(160);banner(`🔥 سلسلة ${R.streak}`);$("#fb").textContent=PRAISE[R.streak%5]}else $("#fb").textContent="✅ "+PRAISE[R.ok%5]}
-  else{R.streak=0;bad();$("#fb").textContent="❌ حاول مرة تانية في الجولة الجاية. الصح باللون الأخضر."}
+  const ok=b&&i===correct;
+  if(R.ex){R.res.push({id:q.id,ok:!!ok,to:!b})}
+  b&&b.classList.add(ok?"ok":"no");
+  if(!ok&&q.kind!=="open")document.querySelector(`.opt[data-i="${correct}"]`).classList.add("ok");
+  const rc=(b||document.querySelector(`.opt[data-i="${correct}"]`)).getBoundingClientRect();if(b)flash(ok);if(ok){const pts=10+Math.min(R.streak,5)*2;S.xp=(S.xp||0)+pts;floatTxt("+"+pts,rc.left+rc.width/2-20,rc.top);burstAt(rc.left+rc.width/2,rc.top+rc.height/2,70);R.ok++;R.streak++;S.streak=R.streak;S.best=Math.max(S.best,R.streak);(R.streak%3===0?(sfx("streak"),vib(30)):good());if(R.streak%3===0){boom(160);banner(`🔥 سلسلة ${R.streak}`);$("#fb").textContent=PRAISE[R.streak%5]}else $("#fb").textContent="✅ "+PRAISE[R.ok%5]}
+  else{R.streak=0;bad();$("#fb").textContent=b?"❌ حاول مرة تانية في الجولة الجاية. الصح باللون الأخضر.":"⏰ انتهى الوقت. الصح باللون الأخضر."}
   setTimeout(()=>{R.i++;R.i<R.qs.length?show():end()},1500);
- });
+ };
+ if(q.kind==="open"){const ob=document.querySelector(".opt");ob.onclick=()=>{$("#mdl").style.display="block";$("#opts").innerHTML=`<button class="opt" data-i="0">✅ عرفتها</button><button class="opt" data-i="1">❌ لم أعرفها</button>`;document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(b,+b.dataset.i))}}
+ else document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(b,+b.dataset.i));
+ if(R.ex){startTimer(()=>answer(null,-1))}
 }
 function end(){
+ if(R.ex)return endExam();
  const n=R.qs.length,r=R.ok/n,st=r>=.9?3:r>=.6?2:r>=.3?1:0;S.stars+=st;S.rounds++;save();if(st>=2){boom(260);banner(st===3?"🏆 بطل!":"👏 أحسنت!")}sfx(st===3?"win":st>=1?"okend":"tryagain");
  setTimeout(()=>{const c=$("#cn");c&&countUp(c,R.ok)},0);app.innerHTML=`<h1>${st===3?"🏆 ممتاز!":st?"👏 أحسنت!":"💪 كمّل وهتتحسن"}</h1><div class="card"><div class="stars3">${[1,2,3].map(i=>`<span style="animation-delay:${i*.3}s">${i<=st?"★":"☆"}</span>`).join("")}</div><div class="cnt shine" dir="ltr"><span id="cn">0</span> / ${n}</div></div><div class="lvl">${lvl(S.xp||0)} · ${S.xp||0} نقطة</div>
  <div class="row"><button class="big" onclick="start('${R.sec}')">جولة جديدة</button><button class="big" onclick="home()">الرئيسية</button></div>`;
