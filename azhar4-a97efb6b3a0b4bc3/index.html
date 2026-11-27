@@ -214,7 +214,7 @@ function show(){
 }
 function end(){
  const n=R.qs.length,r=R.ok/n,st=r>=.9?3:r>=.6?2:r>=.3?1:0;S.stars+=st;S.rounds++;save();if(st>=2){boom(260);banner(st===3?"🏆 بطل!":"👏 أحسنت!")}if(st===3)[0,300,600].forEach(t=>setTimeout(()=>good(),t));
- setTimeout(()=>{const c=$("#cn");c&&countUp(c,R.ok)},0);app.innerHTML=`<h1>${st===3?"🏆 ممتاز!":st?"👏 أحسنت!":"💪 كمّل وهتتحسن"}</h1><div class="card"><div class="stars3">${[1,2,3].map(i=>`<span style="animation-delay:${i*.3}s">${i<=st?"★":"☆"}</span>`).join("")}</div><div class="cnt shine"><span id="cn">0</span> / ${n}</div></div><div class="lvl">${lvl(S.xp||0)} · ${S.xp||0} نقطة</div>
+ setTimeout(()=>{const c=$("#cn");c&&countUp(c,R.ok)},0);app.innerHTML=`<h1>${st===3?"🏆 ممتاز!":st?"👏 أحسنت!":"💪 كمّل وهتتحسن"}</h1><div class="card"><div class="stars3">${[1,2,3].map(i=>`<span style="animation-delay:${i*.3}s">${i<=st?"★":"☆"}</span>`).join("")}</div><div class="cnt shine" dir="ltr"><span id="cn">0</span> / ${n}</div></div><div class="lvl">${lvl(S.xp||0)} · ${S.xp||0} نقطة</div>
  <div class="row"><button class="big" onclick="start('${R.sec}')">جولة جديدة</button><button class="big" onclick="home()">الرئيسية</button></div>`;
 }
 if(false);
