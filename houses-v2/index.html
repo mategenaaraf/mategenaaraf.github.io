@@ -108,7 +108,7 @@ const app=document.getElementById('app');
 function home(){
   mode=null;house=null;
   app.innerHTML=`<div class="screen"><h1>البيوت الأربعة</h1>
-  <div class="sub">بنك ${AR(210)} سؤالًا موثّقًا — لعبة مستقلة: أربعة بيوت، كل بيت له عالمه وأسئلته. اختر سن اللاعب وبيته، والعب جولة، وكل إجابة بيظهر بعدها التصحيح والمصدر.</div>
+  <div class="sub">بنك ${AR(Object.values(HOUSES).reduce((n,h)=>n+h.questions.length,0))} سؤالًا موثّقًا — لعبة مستقلة: أربعة بيوت، كل بيت له عالمه وأسئلته. اختر سن اللاعب وبيته، والعب جولة، وكل إجابة بيظهر بعدها التصحيح والمصدر.</div>
   <div class="grid modes">${MODES.map((m,i)=>`<div class="card" onclick="pickMode(${i})"><div class="ic">${m.icon}</div>${m.label}<small>${m.sub}</small></div>`).join('')}</div>
   <div class="disc">الأسئلة موثقة بمصادرها الرسمية ومعظمها من دار الإفتاء المصرية، واللعبة تعليمية وليست فتوى. مستويات الأسئلة تصنيف تحريري. الجولة بتتحفظ على الجهاز ده بس.</div></div>`;
 }
@@ -155,7 +155,7 @@ function pick(pos){
   const sc=document.getElementById('score');if(sc){sc.textContent=AR(answers.filter(Boolean).length);if(ok)sc.classList.add('bump')}
   const kids=mode.id==='kids';
   const ex=document.getElementById('ex');ex.className='ex';
-  ex.innerHTML=`<b>${ok?(kids?'برافو عليك! إجابة صح 🌟':'✔ إجابة صحيحة'):(kids?'مش مشكلة يا بطل! الصح: ':'✘ الصحيح: ')+(ok?'':q.o[q.a])}</b><br>${q.ex}<br><a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a>`;
+  ex.innerHTML=`<b>${ok?(kids?'برافو عليك! إجابة صح 🌟':'✔ إجابة صحيحة'):(kids?'مش مشكلة يا بطل! الصح: ':'✘ الصحيح: ')+(ok?'':q.o[q.a])}</b><br>${q.ex}<br>${q.srcUrl?`<a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a>`:`<span class="srcplain">المصدر: ${q.srcLabel}</span>`}`;
   const nx=document.getElementById('next');nx.className='';
   nx.innerHTML=`<button class="btn" onclick="${idx+1>=round.length?'result()':'goNext()'}">${idx+1>=round.length?'شوف نتيجتك':'السؤال التالي'}</button>`;
 }
@@ -170,7 +170,7 @@ function result(){
    <button class="btn" onclick="pickHouse(house)">العب تاني</button>
    <button class="btn outline" onclick="pickMode(MODES.indexOf(mode))">البيوت</button>
    <button class="btn outline" onclick="home()">البداية</button></div>
-   ${misses.map(q=>`<div class="miss"><b>${q.q}</b><br>الصحيح: ${q.o[q.a]}<br>${q.ex} — <a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a></div>`).join('')}</div>`;
+   ${misses.map(q=>`<div class="miss"><b>${q.q}</b><br>الصحيح: ${q.o[q.a]}<br>${q.ex} — ${q.srcUrl?`<a href="${q.srcUrl}" target="_blank" rel="noopener">${q.srcLabel}</a>`:`<span class="srcplain">المصدر: ${q.srcLabel}</span>`}</div>`).join('')}</div>`;
   try{const best=JSON.parse(localStorage.getItem('bh_best')||'{}');const key=mode.id+'_'+house;
     if(!best[key]||score>best[key]){best[key]=score;localStorage.setItem('bh_best',JSON.stringify(best));}}catch(e){}
 }
