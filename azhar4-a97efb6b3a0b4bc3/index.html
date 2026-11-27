@@ -7,7 +7,7 @@
 <title>رحلة الأزهري الصغير</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{--g1:#14825a;--g2:#0b5d3b;--g3:#06361f;--ac:#ffd36a;margin:0;font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;background:radial-gradient(circle at 50% 0,var(--g1),var(--g2) 55%,var(--g3));background-attachment:fixed;transition:background .4s;color:#fff;min-height:100vh;overflow-x:hidden}
+body{--g1:#14825a;--g2:#0b5d3b;--g3:#06361f;--ac:#ffd36a;margin:0;font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",sans-serif;background:linear-gradient(180deg,var(--g3) 0%,var(--g2) 48%,var(--g1) 100%);background-attachment:fixed;transition:background .4s;color:#fff;min-height:100vh;overflow-x:hidden}
 .stars{position:fixed;inset:0;pointer-events:none;opacity:.5;background-image:radial-gradient(2px 2px at 20% 30%,#fff8,transparent),radial-gradient(2px 2px at 70% 60%,#fff8,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#fff8,transparent),radial-gradient(2px 2px at 85% 15%,#fff8,transparent);animation:tw 4s infinite alternate}
 @keyframes tw{to{opacity:.15}}
 main{position:relative;max-width:520px;margin:auto;padding:18px 16px 40px}
@@ -54,6 +54,11 @@ body[data-g="6"]{--g1:#ef5a5f;--g2:#a8252d;--g3:#4a0b12;--ac:#ffd36a}
 #opts .opt:nth-child(4n+1){border-color:#ffb0d4}#opts .opt:nth-child(4n+2){border-color:#9fd8ff}#opts .opt:nth-child(4n+3){border-color:#a9f0c8}#opts .opt:nth-child(4n+4){border-color:#ffe08a}
 .bar i{background:linear-gradient(90deg,#ff7ac0,#ffd36a,#6cffb0)!important}
 .lvl{color:var(--ac)}
+.land{opacity:.5;position:fixed;left:0;right:0;bottom:0;height:34vh;z-index:0;pointer-events:none}.land svg{width:100%;height:100%;display:block}
+.land .glow{fill:url(#hg)}.land .sil{fill:#000;fill-opacity:.42}.land .gold{fill:var(--ac);fill-opacity:.85}.land .lt{fill:var(--ac);fill-opacity:.55}
+.hero{height:170px;margin:-4px 0 4px}.hero svg{width:100%;height:100%;display:block}.hero .sil{fill-opacity:.6}.hero .gold{fill-opacity:1}
+.crescent{position:fixed;top:9%;left:9%;width:44px;height:44px;border-radius:50%;box-shadow:inset -13px 0 0 0 var(--ac);transform:rotate(-20deg);opacity:.85;pointer-events:none;filter:drop-shadow(0 0 10px var(--ac))}
+.card{background:#00000030!important}
 .src{font-size:11px;opacity:.85;text-align:center;margin-top:8px;color:#bff5d2}.src.unoff{color:#ffd9a0;background:#ff9d0033;border-radius:8px;padding:3px 6px}.ref{font-size:12px;opacity:.7;text-align:center;margin-top:6px}
 .row{display:flex;gap:10px}.row .big{flex:1}
 .stars3{color:#ffd45e;text-shadow:0 0 18px #ffd45e;font-size:54px;text-align:center;letter-spacing:6px}
@@ -80,7 +85,7 @@ body.flashbad{animation:flb .45s}@keyframes flb{30%{box-shadow:inset 0 0 90px 30
 .shine{animation:pop .6s both,glow 1.4s .6s infinite alternate}@keyframes glow{to{filter:drop-shadow(0 0 22px #ffd45e)}}
 
 </style></head><body>
-<div class="stars"></div><canvas id="cv"></canvas><canvas id="bg" style="position:fixed;inset:0;pointer-events:none;z-index:0"></canvas>
+<div class="crescent"></div><div class="land" id="land"></div><div class="stars"></div><canvas id="cv"></canvas><canvas id="bg" style="position:fixed;inset:0;pointer-events:none;z-index:0"></canvas>
 <main id="app"></main>
 <script src="data.js"></script>
 <script>
@@ -173,7 +178,7 @@ let deferred;addEventListener("beforeinstallprompt",e=>{e.preventDefault();defer
 function home(){
  const g=S.grade,P=GP();
  const qn=ids("quran").length,isn=ISL(g).length;
- app.innerHTML=`<div class="moon">🌙</div><h1>رحلة الأزهري الصغير</h1><div class="sub">تدريب القرآن الكريم والتربية الإسلامية، الصف ${GN[g]} الابتدائي</div>
+ app.innerHTML=`<div class="hero">${heroSVG()}</div><h1>رحلة الأزهري الصغير</h1><div class="sub">تدريب القرآن الكريم والتربية الإسلامية، الصف ${GN[g]} الابتدائي</div>
  <div class="grades">${[1,2,3,4,5,6].map(x=>`<button class="gb ${x===g?"on":""}" onclick="setGrade(${x})">${x}</button>`).join("")}</div>
  <div class="lvl">${lvl(S.xp||0)} · ${S.xp||0} نقطة</div><div class="card stat"><div><b>⭐ ${S.stars}</b>نجوم</div><div><b>🔥 ${S.best}</b>أفضل سلسلة</div><div><b>${S.rounds}</b>جولات</div></div>
  <button class="big" onclick="start('q1')">📖 القرآن، الترم الأول</button><button class="big" onclick="start('q2')">📖 القرآن، الترم الثاني</button><button class="big" onclick="start('quran')">📖 القرآن، المقرر كله</button><div class="warn" style="margin:6px 0">حسب شهور المنهج الرسمي 2026/2027</div>${P.map(p=>`<button class="big" onclick="start('${p.id}')">🗓️ ${p.t}</button>`).join("")}
@@ -184,7 +189,18 @@ function home(){
  if(deferred)$("#inst").style.display="block";
  theme();document.querySelectorAll("#app .big:not(#inst)").forEach((b,i)=>b.classList.add("m"+i%6));
 }
-function theme(){const g=S.grade;document.body.dataset.g=g;const m=document.querySelector('meta[name=theme-color]');m&&m.setAttribute("content",{1:"#8e2fc0",2:"#d3480f",3:"#1f5fd0",4:"#0b5d3b",5:"#0e8a94",6:"#a8252d"}[g])}
+
+const LM={
+1:`<rect class="sil" x="0" y="186" width="400" height="14"/><rect class="sil" x="150" y="92" width="100" height="96"/><rect class="gold" x="150" y="112" width="100" height="7"/><path class="gold" d="M186 188v-34a14 14 0 0 1 28 0v34z"/><path class="sil" d="M30 188v-92h14v92zM26 96h22l-4-8h-14zM33 88h8l-4-22z M356 188v-92h14v92zM352 96h22l-4-8h-14zM359 88h8l-4-22z"/><circle class="gold" cx="37" cy="108" r="3"/><circle class="gold" cx="363" cy="108" r="3"/><path class="sil" d="M60 188v-24a10 10 0 0 1 20 0v24zM90 188v-24a10 10 0 0 1 20 0v24zM290 188v-24a10 10 0 0 1 20 0v24zM320 188v-24a10 10 0 0 1 20 0v24z"/>`,
+2:`<rect class="sil" x="0" y="186" width="400" height="14"/><path class="sil" d="M166 188v-34h68v34zM170 154c0-40 60-40 60 0z"/><path class="gold" d="M178 154c0-26 44-26 44 0z" fill-opacity=".35"/><rect class="sil" x="199" y="104" width="2" height="12"/><path class="sil" d="M70 188v-110h10v110zM68 78h14l-7-24zM320 188v-110h10v110zM318 78h14l-7-24zM110 188v-80h8v80zM108 108h12l-6-20zM282 188v-80h8v80zM280 108h12l-6-20z"/><path class="lt" d="M72 96h6v6h-6zM322 96h6v6h-6zM112 120h4v5h-4zM284 120h4v5h-4zM180 168h6v10h-6zM194 168h6v10h-6zM208 168h6v10h-6z"/><path class="sil" d="M130 188v-26h36v26zM234 188v-26h36v26z"/>`,
+3:`<rect class="sil" x="0" y="186" width="400" height="14"/><path class="sil" d="M150 188v-52l17-17h66l17 17v52z"/><path class="gold" d="M162 132c0-52 76-52 76 0z"/><rect class="sil" x="198" y="68" width="4" height="14"/><circle class="gold" cx="200" cy="62" r="4"/><path class="lt" d="M160 150h8v22h-8zM176 150h8v22h-8zM192 150h8v22h-8zM208 150h8v22h-8zM224 150h8v22h-8z"/><path class="sil" d="M40 188v-36h70v36zM48 152c0-30 54-30 54 0z"/><path class="sil" d="M300 188v-22h60v22zM330 166v-40h4v40z"/>`,
+4:`<rect class="sil" x="0" y="186" width="400" height="14"/><path class="sil" d="M150 188v-44h100v44zM168 144c0-34 64-34 64 0z"/><path class="gold" d="M176 144c0-22 48-22 48 0z" fill-opacity=".3"/><rect class="sil" x="199" y="96" width="2" height="12"/><path class="sil" d="M88 188v-98h20v98zM84 90h28v-6h-28zM90 84h16v-26h-16zM86 58h24l-12-22zM92 118h12v-4h-12z"/><path class="sil" d="M292 188v-98h20v98zM288 90h28v-6h-28zM294 84h16v-26h-16zM290 58h24l-12-22z"/><path class="lt" d="M94 100h8v8h-8zM296 100h8v8h-8zM164 160h8v18h-8zM180 160h8v18h-8zM212 160h8v18h-8zM228 160h8v18h-8z"/><path class="sil" d="M30 188v-30h54v30zM316 188v-30h54v30z"/>`,
+5:`<rect class="sil" x="0" y="186" width="400" height="14"/><path class="sil" d="M110 188v-44h180v44z"/><path class="sil" d="M140 144c0-22 36-22 36 0zM182 144c0-22 36-22 36 0zM224 144c0-22 36-22 36 0z"/><path class="gold" d="M146 144c0-14 24-14 24 0zM188 144c0-14 24-14 24 0zM230 144c0-14 24-14 24 0z" fill-opacity=".3"/><path class="sil" d="M92 188v-86h12v86zM90 102h16l-8-26zM296 188v-86h12v86zM294 102h16l-8-26zM126 188v-62h8v62zM124 126h12l-6-18zM266 188v-62h8v62zM264 126h12l-6-18z"/><path class="lt" d="M96 118h4v8h-4zM300 118h4v8h-4zM150 162h6v16h-6zM170 162h6v16h-6zM194 162h6v16h-6zM214 162h6v16h-6zM238 162h6v16h-6z"/><path class="sil" d="M30 188v-10h50v10zM320 188v-10h50v10z"/>`,
+6:`<rect class="sil" x="0" y="186" width="400" height="14"/><path class="sil" d="M70 188v-94h230v94zM70 94l6-8h6l6 8zM100 94l6-8h6l6 8zM130 94l6-8h6l6 8zM160 94l6-8h6l6 8zM190 94l6-8h6l6 8zM220 94l6-8h6l6 8zM250 94l6-8h6l6 8zM280 94l6-8h6l6 8z"/><path d="M164 188v-62a22 22 0 0 1 44 0v62z" fill="#000" fill-opacity=".38"/><path class="gold" d="M174 188v-56a12 12 0 0 1 24 0v56z" fill-opacity=".35"/><path class="sil" d="M310 188v-150h16v150zM306 38h24l-12-20zM308 78h20v-5h-20zM308 120h20v-5h-20z"/><path class="sil" d="M90 94c0-30 46-30 46 0z"/><path class="lt" d="M94 120h8v14h-8zM110 120h8v14h-8zM126 120h8v14h-8zM244 120h8v14h-8zM260 120h8v14h-8zM276 120h8v14h-8zM244 150h8v14h-8zM260 150h8v14h-8zM276 150h8v14h-8z"/>`
+};
+const heroSVG=()=>`<svg viewBox="40 30 320 170" preserveAspectRatio="xMidYMax meet"><defs><radialGradient id="hg2" cx="50%" cy="85%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect x="0" y="0" width="400" height="200" fill="url(#hg2)"/>${LM[S.grade]}</svg>`;
+function land(){const g=S.grade;$("#land").innerHTML=`<svg viewBox="20 10 360 190" preserveAspectRatio="xMidYMax meet"><defs><radialGradient id="hg" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect class="glow" x="0" y="0" width="400" height="200"/>${LM[g]}</svg>`}
+function theme(){const g=S.grade;land();document.body.dataset.g=g;const m=document.querySelector('meta[name=theme-color]');m&&m.setAttribute("content",{1:"#8e2fc0",2:"#d3480f",3:"#1f5fd0",4:"#0b5d3b",5:"#0e8a94",6:"#a8252d"}[g])}
 function setGrade(x){S.grade=x;save();home()}
 let R;
 function start(sec){const qs=pick(sec,10);if(!qs.length)return;R={qs,i:0,ok:0,streak:0,sec};show()}
