@@ -162,9 +162,9 @@ function paintSnd(){sndBtn.textContent=Snd.on?'🔊':'🔇';sndBtn.title=Snd.on?
 sndBtn.addEventListener('click',()=>{Snd.toggle();paintSnd();Snd.tap()});
 paintSnd();
 const MODES=[
- {id:'kids',label:'صغار',sub:'٧–١٢ سنة',icon:'🧒',levels:[1],round:5,time:30,note:'أسئلة مكتوبة للأطفال بتقدّم الأولوية، وبعدها الأسهل من كل البنك. جولة من ٥ أسئلة، وقتك ٣٠ ثانية لكل سؤال.'},
- {id:'youth',label:'شباب',sub:'١٣–١٧ سنة',icon:'🧑',levels:[1,2],round:8,time:25,note:'أسئلة سهلة ومتوسطة، جولة من ٨ أسئلة، ٢٥ ثانية لكل سؤال.'},
- {id:'adults',label:'كبار',sub:'كل المستويات',icon:'🎓',levels:[1,2,3],round:8,time:20,note:'أسئلة متقدمة مكتوبة للكبار بتقدّم الأولوية، وبعدها باقي مستويات البنك. جولة من ٨ أسئلة، ٢٠ ثانية لكل سؤال.'}
+ {id:'kids',label:'صغار',sub:'٧–١٢ سنة',icon:'🧒',levels:[1],round:5,time:60,note:'أسئلة مكتوبة للأطفال بتقدّم الأولوية، وبعدها الأسهل من كل البنك. جولة من ٥ أسئلة، وقتك دقيقة لكل سؤال.'},
+ {id:'youth',label:'شباب',sub:'١٣–١٧ سنة',icon:'🧑',levels:[1,2],round:8,time:60,note:'أسئلة سهلة ومتوسطة، جولة من ٨ أسئلة، دقيقة لكل سؤال.'},
+ {id:'adults',label:'كبار',sub:'كل المستويات',icon:'🎓',levels:[1,2,3],round:8,time:60,note:'أسئلة متقدمة مكتوبة للكبار بتقدّم الأولوية، وبعدها باقي مستويات البنك. جولة من ٨ أسئلة، دقيقة لكل سؤال.'}
 ];
 
 /* merge optional extra questions (extra.js: const EXTRA={ibadat:[...],sira:[...],quran:[...],hadith:[...]}) */
