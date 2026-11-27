@@ -308,7 +308,7 @@ function pick(pos){
   const qb=document.getElementById('qb');
   if(ok){
     streak++;bestStreak=Math.max(bestStreak,streak);
-    const bonus=Math.round(5*tLeft/tTotal),sb=streak>=2?Math.min(streak-1,5)*2:0;
+    const bonus=Math.round(8*tLeft/tTotal),sb=streak>=2?Math.min(streak-1,5)*2:0;
     const gain=10+bonus+sb;points+=gain;
     if(streak>=2)Snd.streak(streak);else Snd.correct();
     vib(30);qb.classList.add('glow');
