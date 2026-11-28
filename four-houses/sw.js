@@ -1,4 +1,4 @@
-const CACHE = 'fh-stable-v19';
+const CACHE = 'fh-stable-v21';
 const ASSETS = ['./', './index.html', './data.js', './extra.js', './manifest.webmanifest'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u=>new Request(u,{cache:'reload'})))).then(() => self.skipWaiting()));
