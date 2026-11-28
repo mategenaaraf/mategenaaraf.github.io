@@ -126,6 +126,7 @@ const GP=()=>B.G[S.grade];
 function ranges(sec){const P=GP();if(sec==="q1")return P.filter(p=>p.term===1).flatMap(p=>p.r);if(sec==="q2")return P.filter(p=>p.term===2).flatMap(p=>p.r);if(sec==="p12")return P.filter(p=>p.id==="p1"||p.id==="p2").flatMap(p=>p.r);const p=P.find(p=>p.id===sec);return p?p.r:P.flatMap(p=>p.r)}
 const inR=(R,n,i)=>R.some(([s,a,b])=>s===n&&i+1>=a&&(b===0||i+1<=b));
 const gSurahs=()=>[...new Set(GP().flatMap(p=>p.r.map(x=>x[0])))];
+B.islamic=B.islamic.filter(x=>!/الوكيل/.test(x.src||""));
 const META=/في أي مجال يدخل|يُدرس في الصف/;
 const ISLA=B.islamic.map((x,i)=>[x,i]).filter(([x])=>!META.test(x.q));
 const ISL=g=>g===4?ISLA.map(a=>a[0]):[];
@@ -162,7 +163,7 @@ function mk0(id){
 }
 
 function mkD(i){const d=REL.D[i],[g,mo,ty,q,a,w,sid]=d;
- const src=`غير رسمي: سؤال من نماذج امتحانات منشورة على موقع شبابيك (shbabbek.com/show/${sid})، ${mo[0]==="p"?"والموضوع مطابق لموضوعات الأزهر الرسمية 2026/2027 لشهر "+REL.months[mo]:"ضمن منهج الفصل الأول"}. يحتاج مراجعة معلم`;
+ const src=`غير رسمي: سؤال من نماذج امتحانات منشورة على موقع شبابيك (shbabbek.com/show/${sid})، ${mo[0]==="p"?"والموضوع مطابق لموضوعات الأزهر الرسمية 2026/2027 لشهر "+REL.months[mo]:"ضمن منهج الفصل الأول"}. نسخة تجريبية تحتاج مراجعة معلم، فتحقق من كتابك ومعلمك`;
  if(ty==="m")return{id:"d:"+i,sec:"islamic",kind:"mcq",q,opts:[a,...w],ans:0,off:false,src};
  if(ty==="t")return{id:"d:"+i,sec:"islamic",kind:"tf",q:"صح أم خطأ: "+q,opts:["صح","خطأ"],ans:a?0:1,off:false,src};
  return{id:"d:"+i,sec:"islamic",kind:"open",q,model:a,off:false,src};
@@ -270,7 +271,7 @@ function home(){
  ${isn?`<button class="big" onclick="start('islamic')">🕌 التربية الإسلامية</button><button class="big" onclick="start('mix')">🎲 جولة مشكلة</button>`:`<div class="warn">التربية الإسلامية لهذا الصف قيد الإعداد.</div>`}
  <button class="big" onclick="exams()">📝 الامتحانات الشهرية</button>
  <button class="big" id="inst" onclick="deferred&&deferred.prompt()">📲 ثبّت اللعبة على الموبايل</button>
- <div class="warn">نسخة تجريبية خاصة. بنك القرآن للصف ${GN[g]}: ${qn} سؤال من مقرر الأزهر الرسمي 2026/2027. أسئلة التربية الدينية (${isn}) مباشرة على نمط امتحانات الأزهر، كل سؤال عليه مصدره ${isOff?"(بعضها من نموذج رسمي وأغلبها غير رسمي)":"(كلها غير رسمية من مواقع تعليمية)"} وتحتاج مراجعة معلم قبل النشر.</div>
+ <div class="warn"><b>نسخة تجريبية صدقة جارية، وتحتاج إلى مراجعة معلم.</b> تطبيق تعليمي غير رسمي للتدريب، وليس فتوى ولا بديلا عن كتابك ومعلمك. بنك القرآن للصف ${GN[g]}: ${qn} سؤال من مقرر الأزهر الرسمي 2026/2027 (نص الآيات من api.quran.com). أسئلة التربية الدينية (${isn}) على نمط امتحانات الأزهر، ومصدر كل سؤال مكتوب تحته ${isOff?"(بعضها من نموذج رسمي وأغلبها من مواقع تعليمية غير رسمية)":"(من مواقع تعليمية غير رسمية)"}. تحقق من المصدر دائما، وأخبرنا بأي ملاحظة.</div>
  <div class="ref">أسئلتك لا تتكرر حتى ينتهي البنك. الأسئلة والاختيارات بترتيب عشوائي.</div>`;
  if(deferred)$("#inst").style.display="block";
  muteBtn();theme();document.querySelectorAll("#app .big:not(#inst)").forEach((b,i)=>b.classList.add("m"+i%6));
@@ -297,7 +298,7 @@ function startTimer(onEnd){const L=exLimit(S.grade)*1000,t0=Date.now();R.tv=setI
 function exams(){
  const g=S.grade;theme();
  app.innerHTML=`<h1>📝 الامتحانات الشهرية</h1><div class="sub">الصف ${GN[g]} الابتدائي · ${NQ} سؤالا من منهج الشهر فقط · ${exLimit(g)} ثانية لكل سؤال</div>
- ${g===4?`<div class="warn" style="margin:8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,200,60,.18);border:1px solid rgba(255,200,60,.5);font-size:13px;line-height:1.7">⚠ <b>افتراض غير مؤكد:</b> توزيع دروس التربية الدينية للصف الرابع على الأشهر مرتب بحسب ترتيب الدروس في الجدول الرسمي لأن عمود الأشهر غير واضح فيه. سيُعدَّل عند الحصول على الجدول الرسمي.</div>`:""}
+ ${g===4?`<div class="warn" style="margin:8px 0;padding:8px 10px;border-radius:12px;background:rgba(255,200,60,.18);border:1px solid rgba(255,200,60,.5);font-size:13px;line-height:1.7">ℹ <b>ملاحظة:</b> توزيع دروس التربية الدينية للصف الرابع على الأشهر تقريبي (جدول الأزهر لا يبين الأشهر بوضوح) وسيُعدَّل عند توفر الجدول.</div>`:""}
  ${EX().map(ex=>{const o=exOpen(ex),st=exStats(g,ex),c=exCounts(g,ex),p=st?Math.round(st.best/st.n*100):0;
   return `<button class="exb ${o?"open":"lock"}" ${o?`onclick="startExam('${ex.id}')"`:"disabled"}><span class="ic">${!o?"🔒":st?(starsOf(p)?"⭐":"📝"):"📝"}</span><span>${ex.t}<small>${o?(c.r?`قرآن + ${c.r>NQ?"":""}تربية دينية (${c.r} سؤال مباشر متاح)`:`قرآن فقط (لا أسئلة تربية دينية موثقة لهذا الشهر بعد)`):exLabel(ex)}${st?` · محاولات ${st.h.length}`:""}</small></span><span class="rt">${st?p+"%":o?"ابدأ":""}</span></button>`}).join("")}
  <div class="row"><button class="big" onclick="progress()">📈 تقدمي</button><button class="big" onclick="home()">الرئيسية</button></div>
@@ -401,7 +402,7 @@ function end(){
 }
 if(false);
 home();
-const AZS_VER="v15 · 2026-11-27";
+const AZS_VER="v17 · 2026-11-28";
 if("serviceWorker"in navigator){const had=!!navigator.serviceWorker.controller;let rl=false;navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!rl&&!document.querySelector(".opt,.exh,#tmw")){rl=true;location.reload()}});navigator.serviceWorker.register("sw.js").then(r=>r.update()).catch(()=>{})}
 setInterval(()=>{if(app.innerText.includes("القرآن، الترم الأول")&&!app.querySelector(".azsv"))app.insertAdjacentHTML("beforeend",'<div class="azsv" style="text-align:center;opacity:.6;font-size:12px;margin:14px 0 24px">الإصدار '+AZS_VER+'</div>')},400);
 </script></body></html>
