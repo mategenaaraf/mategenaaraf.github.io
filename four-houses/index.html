@@ -36,7 +36,7 @@ h1{font-size:1.9rem;margin-bottom:6px;letter-spacing:.2px}
 @keyframes shine{to{background-position:-200% 0}}
 .hero .sub{text-align:center}
 .grid{display:grid;gap:12px}
-.modes{grid-template-columns:repeat(2,1fr)}
+.modes{grid-template-columns:repeat(3,1fr);gap:8px}.modes .card{padding:14px 4px}.modes .card small{font-size:.7rem}
 .houses{grid-template-columns:1fr 1fr}
 .card{position:relative;overflow:hidden;background:var(--card);backdrop-filter:blur(6px);border:1.5px solid var(--line);border-radius:18px;padding:16px 10px;text-align:center;cursor:pointer;color:var(--ink);font-size:1rem;font-weight:600;transition:transform .2s,box-shadow .25s,border-color .25s;animation:cardIn .55s cubic-bezier(.2,.9,.3,1.2) both}
 .card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}
@@ -196,6 +196,11 @@ body:not([data-house=""]) #isl .lan,body:not([data-house=""]) #isl .cres{display
 .srcline{display:block;direction:rtl;unicode-bidi:isolate;text-align:right;line-height:1.9;margin-top:6px;word-break:keep-all;overflow-wrap:normal}.srcline a,.srcline bdi{word-break:keep-all;overflow-wrap:normal}.srcline .badge-un{display:inline-block;margin:4px 0 0}
 .copyl{margin-top:12px;padding:10px 12px;border-top:1px solid var(--line);font-size:.8rem;line-height:1.8;color:#e6ecf7;text-align:center;opacity:.92}
 body.paused *{animation-play-state:paused!important}
+button.card{font-family:inherit;width:100%;display:block;appearance:none;-webkit-appearance:none}
+.card:focus-visible,.btn:focus-visible,.opt:focus-visible{outline:3px solid #ffd54a;outline-offset:3px}
+.sec{font-size:1rem;color:#f6f9fe;margin:16px 0 8px;font-weight:700;text-align:center}
+.fam{grid-template-columns:1fr}
+.fam .card{background:linear-gradient(135deg,rgba(255,213,74,.22),var(--card));border-color:#ffd54a}
 </style>
 </head>
 <body data-house="">
@@ -263,7 +268,7 @@ const LADDER=[100,200,300,500,1000,2000,4000,8000,16000,32000,64000,125000,25000
 const SAFE=[4,9];
 const SRCT=q=>AR(String(q.srcLabel||'').replace(/[،,]\s*مصدر غير رسمي\s*$/,''));
 const SRC=q=>`<div class="srcline" dir="rtl">${q.srcUrl?`<a href="${q.srcUrl}" target="_blank" rel="noopener"><bdi>${SRCT(q)}</bdi></a>`:`<span class="srcplain"><bdi>المصدر: ${SRCT(q)}</bdi></span>`}${UNOFF(q)}</div>`;
-const FH_VER='v19 · 2026-11-27';
+const FH_VER='v21 · 2026-11-28';
 const COPY='<div class="copyl">© ماتيجي نعرف، جميع الحقوق محفوظة. النسخة الرسمية من هذه اللعبة هي الرابط الرسمي الذي تنشره ماتيجي نعرف فقط، وأي نسخة أخرى أو معدّلة ليست منها. اللعبة تعليمية وليست فتوى.<br><small>الإصدار '+FH_VER+'</small></div>';
 const UNOFF=q=>q.unofficial?'<span class="badge-un">مصدر غير رسمي</span>':'';
 const qid=q=>{let h=5381;const s=q.q;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)};
@@ -348,7 +353,10 @@ function home(){
   stopTimer();mode=null;house=null;setHouse('');
   app.innerHTML=`<div class="screen hero"><div class="logo"><span class="moon">🌙</span></div><h1>البيوت الأربعة</h1>
   <div class="sub">بنك ${AR(Object.keys(HOUSES).filter(k=>k!=='all').reduce((n,k)=>n+HOUSES[k].questions.length,0))} سؤالًا موثّقًا — أربعة بيوت، كل بيت له عالمه. اختر سن اللاعب وبيته، واكسب النقاط قبل ما الوقت يخلص، وابنِ سلسلة إجابات صحيحة 🔥</div>
-  <div class="grid modes">${MODES.map((m,i)=>`<div class="card" onclick="pickMode(${i})"><div class="ic">${m.icon}</div>${m.label}<small>${m.sub}</small></div>`).join('')}</div>
+  <h2 class="sec">اختر سن اللاعب</h2>
+  <div class="grid modes">${MODES.map((m,i)=>m.ladder?'':`<button type="button" class="card" onclick="pickMode(${i})"><span class="ic">${m.icon}</span>${m.label}<small>${m.sub}</small></button>`).join('')}</div>
+  <h2 class="sec">وضع خاص للعائلة</h2>
+  <div class="grid fam">${MODES.map((m,i)=>m.ladder?`<button type="button" class="card" onclick="pickMode(${i})"><span class="ic">${m.icon}</span>${m.label}<small>${m.sub}</small></button>`:'').join('')}</div>
   <div id="inst"></div>
   <div class="disc">مصادر الأسئلة من صفحة دار الإفتاء المصرية وصفحة الأزهر الرسمية وصفحات وزارة الأوقاف المصرية وكتب مذكورة بعنوانها (منها رياض الصالحين) ومشروع المصحف الإلكتروني بجامعة الملك سعود (الأسئلة المأخوذة من بعض الكتب موسومة «مصدر غير رسمي»). اللعبة تعليمية وليست فتوى. مستويات الأسئلة تصنيف تحريري. الجولة بتتحفظ على الجهاز ده بس.</div>${COPY}</div>`;
   paintInst();
@@ -361,7 +369,7 @@ function pickMode(i){
   app.innerHTML=`<div class="screen"><h1>${mode.icon} ${mode.label}</h1><div class="sub">اختار البيت</div>
   <div class="note">${mode.note}</div>
   <div class="grid houses">${keys.map(k=>{const h=HOUSES[k];const n=h.questions.filter(q=>mode.levels.includes(q.lvl)).length;const b=best[mode.id+'_'+k];
-    return `<div class="card hcard" style="--hc:${h.color}" onclick="enterHouse(this,'${k}')"><div class="ic">${houseIcon(k)}</div>${h.name}<small>${h.desc}</small><small>${AR(n)} من ${AR(h.questions.length)} سؤالًا في مسارك</small>${b!=null?`<small>🏆 أفضل نتيجة: ${AR(b)}</small>`:''}</div>`}).join('')}</div>
+    return `<button type="button" class="card hcard" style="--hc:${h.color}" onclick="enterHouse(this,'${k}')"><span class="ic">${houseIcon(k)}</span>${h.name}<small>${h.desc}</small><small>${AR(n)} من ${AR(h.questions.length)} سؤالًا في مسارك</small>${b!=null?`<small>🏆 أفضل نتيجة: ${AR(b)}</small>`:''}</button>`}).join('')}</div>
   <button class="btn outline" onclick="home()">رجوع</button></div>`;
 }
 function enterHouse(el,k){Snd.whoosh();el.classList.add('go');setTimeout(()=>pickHouse(k),320)}
